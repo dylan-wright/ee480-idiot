@@ -1,0 +1,43 @@
+%   Dylan Wright - dylan.wright@uky.edu
+%   EE480 - Assignment 2: The Making Of An IDIOT
+%   note.tex : Implementer's Note
+%   Version:
+%       02-14-2016 : initial
+
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx}
+
+\begin{document}
+\title{Assignment 2: The Making Of An IDIOT\\Implementor's Notes}
+\author{\IEEEauthorblockN{Dylan Wright}
+        \IEEEauthorblockA{dylan.wright@uky.edu}
+        \IEEEauthorblockN{Casey O'Kane}}
+
+\maketitle
+
+\begin{abstract}
+\end{abstract}
+
+\section{Testing}
+\subsection{Instruction Set Architecture}
+In order to test the IDIOT instruction set specification a test framework was
+implemented. This framework is in the \texttt{IDIOT/} directory. The framework
+consists of the folowing files:
+\subsubsection{\texttt{aik.py}}
+To automatically test files \texttt{aik.py} sends a PUSH request to the
+AIK cgi program. The returned html page is parsed and each section is output.
+The \texttt{.text} and \texttt{.data} sections are sent to stdout and the
+assembler messages are sent to \texttt{stderr}. This method is not ideal, an
+AIK executable would be prefferable.
+\subsubsection{\texttt{test.sh}}
+This file can be used to test each \texttt{.idiot} file in the \texttt{progs/}
+directory. This script runs each file through AIK and compares the output to
+the expected output. \texttt{.text} and \texttt{.data} segment expected
+output should be placed in a file with the same name as the program and a 
+\texttt{.expected.out} file extension. Expected assembler messages should
+be placed in a file with a \texttt{.expected.err} extension. The test script
+will report the number of passed, failed and possibly failed tests. This test
+framework was adapted from a script provided by Dr. Jaromczyk in the Fall
+2015 CS 441G: Compilers course.
+\subsection{Verilog Modules}
+\end{document}
