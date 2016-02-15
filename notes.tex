@@ -28,7 +28,18 @@ To automatically test files \texttt{aik.py} sends a PUSH request to the
 AIK cgi program. The returned html page is parsed and each section is output.
 The \texttt{.text} and \texttt{.data} sections are sent to stdout and the
 assembler messages are sent to \texttt{stderr}. This method is not ideal, an
-AIK executable would be prefferable.
+AIK executable would be prefferable. Sample run:
+\begin{verbatim}
+ $ echo "file.idiot" | ./aik.py
+\end{verbatim}
+\subsubsection{\texttt{diss.py}}
+To make test results human readable, \texttt{diss.py} dissassembles a 
+\texttt{.out} file (the \texttt{.text} and \texttt{.data} segment of the 
+output of \texttt{aik.py}). The code is converted to binary and displayed in
+tabular format. Sample run:
+\begin{verbatim}
+ $ echo "file.out" | ./diss.py
+\end{verbatim}
 \subsubsection{\texttt{test.sh}}
 This file can be used to test each \texttt{.idiot} file in the \texttt{progs/}
 directory. This script runs each file through AIK and compares the output to
@@ -38,6 +49,9 @@ output should be placed in a file with the same name as the program and a
 be placed in a file with a \texttt{.expected.err} extension. The test script
 will report the number of passed, failed and possibly failed tests. This test
 framework was adapted from a script provided by Dr. Jaromczyk in the Fall
-2015 CS 441G: Compilers course.
+2015 CS 441G: Compilers course. Sample run:
+\begin{verbatim}
+ $ ./test
+\end{verbatim}
 \subsection{Verilog Modules}
 \end{document}

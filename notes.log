@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.1.10)  14 FEB 2016 15:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Arch Linux) (preloaded format=pdflatex 2016.1.10)  15 FEB 2016 15:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -230,6 +230,11 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 LaTeX Font Info:    Font shape `OT1/pcr/m/it' in size <10> not available
 (Font)              Font shape `OT1/pcr/m/sl' tried instead on input line 27.
 
+Underfull \hbox (badness 2197) in paragraph at lines 36--40
+ \OT1/ptm/m/it/10 2) \OT1/pcr/m/sl/10 diss.py\OT1/ptm/m/it/10 : [][] \OT1/ptm/m
+/n/10 To make test re-sults hu-man read-able,
+ []
+
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -249,7 +254,7 @@ Before submitting the final camera ready copy, remember to:
 Here is how much of TeX's memory you used:
  2332 strings out of 493054
  37953 string characters out of 6140586
- 100946 words of memory out of 5000000
+ 102946 words of memory out of 5000000
  5857 multiletter control sequences out of 15000+600000
  34139 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -260,7 +265,7 @@ e1/urw/courier/ucrro8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.
 pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texmf-
 dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/ti
 mes/utmri8a.pfb>
-Output written on notes.pdf (1 page, 53454 bytes).
+Output written on notes.pdf (1 page, 55842 bytes).
 PDF statistics:
  33 PDF objects out of 1000 (max. 8388607)
  23 compressed objects within 1 object stream
