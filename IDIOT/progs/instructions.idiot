@@ -1,0 +1,9 @@
+add $u0, $u0
+and $u0, $u0
+any $u0, $u0
+dup $u0, $u0
+ld $u0, $u0
+li $u0, $u0
+or $u0, $u0
+shr $u0, $u0
+xor $u0, $u0
