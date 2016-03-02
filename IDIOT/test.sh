@@ -7,6 +7,8 @@
 #               Dr Jaromczyk for CS 441
 #   Version:
 #       02-14-2016 : initial
+#       03-02-2016 : now actually working. An else was in the wrong 
+#                    scope
 
 spec="IDIOT_spec"
 aik="aik.py"
@@ -78,7 +80,7 @@ summarize() {
 
 # main
 
-for f in $dir/*.idiot
+for f in $dir*.idiot
 do
   base=${f%.idiot}
   testname=${base##*/}
@@ -104,9 +106,9 @@ do
     if diff -u "$expected" aik.out > aik.out.diff; then
       if [ -s aik.err ]; then
         questionable "$testname" "Correct but with compiler/error messages"
-      else
-        success "$testname"
       fi
+    else
+      success "$testname"
     fi
   else
     failure "$testname"

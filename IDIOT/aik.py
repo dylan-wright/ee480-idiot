@@ -5,6 +5,7 @@
     aik.py : Automatic interface to aik cgi
     Version:
         02-14-2016 : initial
+        03-02-2016 : added check before printing to stderr
 '''
 import requests
 import sys
@@ -20,10 +21,11 @@ def main():
     response = post_inputs(sinput, iinput)
 
     msg_dict = parse_response(response.text)
-    
-    print("Spec:", msg_dict["spec"], file=sys.stderr, sep="\n")
-    print("Code:", msg_dict["code"], file=sys.stderr, sep="\n")
-    print("Anal:", msg_dict["anal"], file=sys.stderr, sep="\n")
+   
+    if (msg_dict["spec"] != "" and msg_dict["code"] != "" and msg_dict["anal"] != ""):
+        print("Spec:", msg_dict["spec"], file=sys.stderr, sep="\n")
+        print("Code:", msg_dict["code"], file=sys.stderr, sep="\n")
+        print("Anal:", msg_dict["anal"], file=sys.stderr, sep="\n")
     print("Text:", msg_dict["text"], sep="\n")
     print("Data:", msg_dict["data"], sep="\n")
 
