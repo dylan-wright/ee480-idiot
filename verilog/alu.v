@@ -8,8 +8,10 @@
 
 `include signals.v
 
-module proccesor (
-    input reset
-    );
+module alu();
+    input [WORD] X;
+    input Y;
+    
+    output Z;
 
 endmodule
