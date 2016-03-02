@@ -4,11 +4,15 @@
 ;   Version:
 ;       02-12-2016 : initial
 ;       03-02-2016 : added text/data segments
+;                    fixed li
+;                    added jz, sz, sys
 
 .twoargs $rd, $rs := .this:4 rd:6 rs:6
-.alias .twoargs 0 add and any dup ld or shr xor
+.alias .twoargs 0 add and any dup ld or shr xor jz
 .immarg $rd, imm := .this:4 rd:6 0:6 imm:16
-.alias .immarg 8 li
+.alias .immarg 9 li
+sz $c := jz:4 c:6 one:6
+sys := jz:4 0:6 0:6
 
 ; registers
 .const {zero one sign all sp  fp  ra rv

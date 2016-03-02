@@ -16,8 +16,7 @@ dir="progs/"
 
 execute () {
   local testfile="$1";
-  local outfile="${1/.idiot/.out}"
-  echo "$testfile" | ./$aik > $outfile
+  echo "$testfile" | ./$aik 
 }
 
 plain () { tput sgr0; }
@@ -89,7 +88,6 @@ do
 
   echo "--> Executing $testname..."
   execute "$f" > aik.out 2> aik.err
-
   if [ -r "$expected_err" ]; then
     echo " --> Checking for expected errors/mesages..."
     if diff -u "$expected_err" aik.err > aik.err.diff; then
@@ -102,25 +100,26 @@ do
   fi
 
   if [ -r "$expected" ]; then
+    echo "found $expected"
     echo " --> Checking output..."
+    diff -u "$expected" aik.out > aik.out.diff
     if diff -u "$expected" aik.out > aik.out.diff; then
       if [ -s aik.err ]; then
         questionable "$testname" "Correct but with compiler/error messages"
+      else
+      success "$testname"
       fi
     else
-      success "$testname"
+      failure "$testname"
+      echo "  --> Diff results:"
+      showdiff aik.out.diff
     fi
-  else
-    failure "$testname"
-    echo "  --> Diff results:"
-    showdiff aik.out.diff
   fi
 
   if [ -s aik.err ]; then
     echo "  --> Compiler/Error messages:"
     sed -e 's/^/   /' aik.err
   fi
-
   echo
 done
 
