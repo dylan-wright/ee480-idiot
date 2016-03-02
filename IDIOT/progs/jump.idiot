@@ -1,0 +1,3 @@
+jz $u0, $u0
+sz $u0
+sys
