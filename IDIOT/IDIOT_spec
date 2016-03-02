@@ -3,13 +3,14 @@
 ;   IDIOT_spec : IDIOT Instruction Set Architecture
 ;   Version:
 ;       02-12-2016 : initial
-
+        03-02-2016 : added text/data segments
 
 .twoargs $.rd, $.rs := .this:4 .rd:6 .rs:6
 .alias .twoargs 0 add and any dup ld li or shr xor
 .immarg $.rd, imm := this:4 .rd:6 zero:6 imm:16
 .alias .immarg 9 li
 
+; registers
 .const {zero one sign all sp  fp  ra rv
         u0   u1  u2   u3  u4  u5  u6 u7
         u8   u9  u10  u11 u12 u13 u14 u15
@@ -18,4 +19,9 @@
         u32  u33 u34  u35 u36 u37 u38 u39
         u40  u41 u42  u43 u44 u45 u46 u47
         u48  u49 u50  u51 u52 u53 u54 u55 }
+
+; text and data segments
+.segment .text 16 0x10000 0 .VMEM
+.segment .data 16 0x10000 0 .VMEM
+
 .const 0 lowfirst
