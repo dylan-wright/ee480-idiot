@@ -7,9 +7,8 @@
 
 .twoargs $.rd, $.rs := .this:4 .rd:6 .rs:6
 .alias .twoargs 0 add and any dup ld li or shr xor
-.jz $.rc, $.ra := 9:4 .rc:6 .ra:6
-.sys := .jz:4 0:6 0:6
-.sz $.rc := .jz:4 .rc:6 1:6
+.immarg $.rd, imm := this:4 .rd:6 zero:6 imm:16
+.alias .immarg 9 li
 
 .const {zero one sign all sp  fp  ra rv
         u0   u1  u2   u3  u4  u5  u6 u7

@@ -31,7 +31,11 @@ note: $(NOTE)
 	pdflatex $^
 	pdflatex $^
 
+idiocc:
+	gcc -o IDIOT/idiocc idiocc.c
+
 clean:
 	-rm dsn
 	-rm *.vcd
 	-rm *.aux *.log
+	-rm idiocc
