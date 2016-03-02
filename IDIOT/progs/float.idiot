@@ -1,0 +1,5 @@
+addf $u0, $u0
+f2i $u0, $u0
+i2f $u0, $u0
+invf $u0, $u0
+mulf $u0, $u0
