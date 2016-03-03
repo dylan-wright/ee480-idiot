@@ -30,7 +30,25 @@ module alu_tb;
         //wait a bit
         #5;
 
+        //loop through operators
+        for (ALUop = `ALUadd; ALUop < `ALUshr; ALUop+=1)
+        begin
+            // 0000 0000
+            #1;
+            // ffff 0000
+            X = 16'hffff;
+#1;
+            // ffff ffff
+            Y = 16'hffff;
+#1;
+            // 0000 ffff
+            X = 0;
+#1;
+        end
+
         $display("Testing finished with %d correct %d failed", correct, failed);
         $finish;
     end
+
+    always #1 Z = z;
 endmodule
