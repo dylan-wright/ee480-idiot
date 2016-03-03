@@ -1,0 +1,20 @@
+VERILOG=iverilog
+SIMENGINE=vvp
+WAVEVIEWER=gtkwave
+
+MODULES=alu.v proccesor.v
+COMPILED=dsn
+HEADERS=signals.v
+TESTS=
+SIMS=
+
+all:
+
+$(COMPILED): $(MODULES)
+	$(VERILOG) -o $(COMPILED) $(MODULES) $(TESTS)
+
+$(SIMS): $(COMPILED)
+	$(SIMENGINE) $(COMPILED)
+
+clean:
+	rm $(COMPILED)
