@@ -13,7 +13,7 @@ module alu(X, Y, ALUop, Z);
     input [2:0] ALUop;
     output reg `WORD Z;
 
-    always @(X or Y or ALUop)
+    always @(ALUop or Y or X)
     begin
         case(ALUop)
             `ALUadd:    Z = X + Y;

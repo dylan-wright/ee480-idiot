@@ -34,16 +34,16 @@ module alu_tb;
         for (ALUop = `ALUadd; ALUop < `ALUshr; ALUop+=1)
         begin
             // 0000 0000
-            #1;
+            #2;
             // ffff 0000
             X = 16'hffff;
-#1;
+#2;
             // ffff ffff
             Y = 16'hffff;
-#1;
+#2;
             // 0000 ffff
             X = 0;
-#1;
+#2;
         end
 
         $display("Testing finished with %d correct %d failed", correct, failed);
