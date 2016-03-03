@@ -10,3 +10,5 @@
 `define ALUand 3'b001
 `define ALUor  3'b010
 `define ALUxor 3'b011
+`define ALUany 3'b100
+`define ALUshr 3'b101
