@@ -18,3 +18,8 @@
 //Register signals
 `define regModeIn 2'b01
 `define regModeOut 2'b10
+
+//Memory signals
+`define memModeIn 2'b01
+`define memModeOut 2'b10
+
