@@ -2,7 +2,7 @@ VERILOG=iverilog
 SIMENGINE=vvp
 WAVEVIEWER=gtkwave
 
-MODULES=alu.v proccesor.v
+MODULES=alu.v register_file.v proccesor.v
 COMPILED=dsn
 HEADERS=signals.v
 TESTS=alu_tb.v
