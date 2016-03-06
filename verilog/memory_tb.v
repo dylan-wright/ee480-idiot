@@ -13,22 +13,23 @@ module memory_tb;
     initial begin
         $dumpfile("memory_tb.vcd");
         $dumpvars(0, memory_tb);
-        clk = 0;
-        mode = 0;
-        data_in = 16'hffff;
-        address = 0;
-        #1 clk = 1; mode = `memModeIn;
-        #1 clk = 0;
-        data_in = 16'hf0f0;
-        address = 10;
-        #1 clk = 1; mode = `memModeIn;
-        #1 clk = 0;
-        #1 clk = 1; mode = `memModeOut; $display("%d", data_out);
-        #1 clk = 0;
-        address = 0;
-        #1 clk = 0; mode = `memModeOut; $display("%d", data_out);
-        
 
+        clk = 0;
+        mode = `memModeIn;
+        for (address = 0; address < 65535; address += 1) begin
+            data_in = address;
+            #1 clk = 1;
+            #1 clk = 0;
+        end
+        
+        mode = `memModeOut;
+        for (address = 0; address < 65535; address += 1) begin
+            #1 clk = 1;
+            #1 clk = 0;
+            if (data_out != address) begin
+                $display("Failure mem[%d] -> %d", address, data_out);
+            end
+        end
     end
 
 endmodule

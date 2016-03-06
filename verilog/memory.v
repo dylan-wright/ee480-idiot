@@ -14,13 +14,10 @@ module memory(data_out, data_in, mode, address, clk);
     assign data_out = (mode == `memModeOut) ? d : 16'bZ;
 
     always @(posedge clk) begin
-        $display("Pos edge");
         if (mode == `regModeIn) begin
-            $display("Write mem[%d] = %d", address, data_in);
             mem[address] = data_in;
         end else if (mode == `regModeOut) begin
-            $display("Read mem[%d] <- %d", address, d);
+            d = mem[address];
         end
     end
-
 endmodule
