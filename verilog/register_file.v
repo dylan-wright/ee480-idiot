@@ -19,7 +19,6 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
     assign data_out = (mode == `regModeOut) ? d : 16'bZ;
 
     always @(posedge clk) begin
-        $display("Pos edge");
         if (mode == `regModeIn) begin
             $display("Write registers[%d] = %d", reg_sel, data_in);
             registers[reg_sel] = data_in;
