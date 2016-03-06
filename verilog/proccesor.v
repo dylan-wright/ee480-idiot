@@ -33,6 +33,7 @@ module proccesor (
     reg [1:0] mem_mode;
     reg `WORD mem_address;
 
+    //Module instantiation
     alu alu_mod(X,
                 Y,
                 ALUop,
@@ -48,6 +49,7 @@ module proccesor (
                       mem_mode,
                       mem_address,
                       clk);
+
     always @(posedge clk)
     begin
         Z <= z;
