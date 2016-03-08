@@ -3,6 +3,7 @@
 module control(
     clk,
     reset,
+    Bus,
     PCBusMode,
     PCInc,
     PCReset,
@@ -22,6 +23,8 @@ module control(
 //Port dec
 input clk;
 input reset;
+
+output reg `WORD Bus;
 
 output reg [1:0] PCBusMode;
 output reg PCInc;
@@ -45,6 +48,7 @@ output reg [1:0] MDRMemMode;
 output reg [1:0] MemMode;
 
 //internals
+reg [1:0] regSel;
 
 //State def
 parameter PCLOAD_0 = 0,
@@ -71,12 +75,10 @@ parameter PCLOAD_0 = 0,
           JOP_0 = 700,
           JOP_A1 = 701,
           JOP_A2 = 702,
-          JOP_A3 = 703,
-          JOP_A4 = 704,
           JOP_B1 = 751,
           JOP_B2 = 752,
-          JOP_B3 = 753,
-          JOP_B4 = 754,
+          JOP_3 = 703,
+          JOP_4 = 704,
           JOP_5 = 705,
           JOP_6 = 706,
           JOP_7 = 707,
@@ -119,13 +121,11 @@ always @(state) begin
                         next_state = 16'bX;
                     end
         JOP_A1:     next_state = JOP_A2;
-        JOP_A2:     next_state = JOP_A3;
-        JOP_A3:     next_state = JOP_A4;
-        JOP_A4:     next_state = JOP_5;
+        JOP_A2:     next_state = JOP_3;
         JOP_B1:     next_state = JOP_B2;
-        JOP_B2:     next_state = JOP_B3;
-        JOP_B3:     next_state = JOP_B4;
-        JOP_B4:     next_state = JOP_5;
+        JOP_B2:     next_state = JOP_3;
+        JOP_3:      next_state = JOP_4;
+        JOP_4:      next_state = JOP_5;
         JOP_5:      next_state = JOP_6;
         JOP_6:      next_state = JOP_7;
         JOP_7:      begin
@@ -142,7 +142,6 @@ end
 
 //sequential
 always @(posedge clk) begin
-    if (reset == 1) begin
         PCBusMode <= 0;
         PCInc <= 0;
         PCReset <= 0;
@@ -157,6 +156,7 @@ always @(posedge clk) begin
         MDRBusMode <= 0;
         MDRMemMode <= 0;
         MemMode <= 0;
+    if (reset == 1) begin
         state <= PCLOAD_0;
     end else begin
         state <= next_state;
@@ -181,6 +181,119 @@ always @(posedge clk) begin
                         end
             INCPC_0:    begin
                             PCNext <= 1;
+                        end
+            ALUOP_0:    begin
+                            XBusMode <= `BusRead;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            ALUOP_1:    begin
+                            YBusMode <= `BusRead;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            ALUOP_2:    begin
+                            //Instruction op code
+                        end
+            ALUOP_3:    begin
+                            ZBusMode <= `BusWrite;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
+            LDOP_0:     begin
+                            MARBusMode <= `MARBusR;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            LDOP_1:     begin
+                            MDRMemMode <= `MDRMemR;
+                            MemMode <= `memModeIn;
+                        end
+            LDOP_2:     begin
+                            MDRBusMode <= `MDRBusW;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
+            STOP_0:     begin
+                            MARBusMode <= `MARBusR;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_1:     begin
+                            MDRBusMode <= `MDRBusR;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_2:     begin
+                            MDRMemMode <= `MDRMemW;
+                            MemMode <= `memModeIn;
+                        end
+            LIOP_0:     begin
+                            XBusMode <= `BusRead;
+                            PCBusMode <= `PCBusW;
+                        end
+            LIOP_1:     begin
+                            YBusMode <= `BusRead;
+                            Bus <= 1;
+                        end
+            LIOP_2:     begin
+                            ALUOp <= `ALUadd;
+                        end
+            LIOP_3:     begin
+                            ZBusMode <= `BusWrite;
+                            MARBusMode <= `MARBusR;
+                            PCBusMode <= `PCBusR;
+                        end
+            LIOP_4:     begin
+                            MemMode <= `memModeIn;
+                            MDRMemMode <= `MDRMemR;
+                        end
+            LIOP_5:     begin
+                            regSel <= 1;
+                            MDRBusMode <= `MDRBusW;
+                            RegMode <= `regModeIn;
+                        end
+            JOP_0:      begin
+                        end
+            JOP_A1:     begin
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                            XBusMode <= `BusRead;
+                        end
+            JOP_A2:     begin
+                            Bus <= -1;
+                            YBusMode <= `BusRead;
+                        end
+            JOP_B1:     begin
+                            regSel <= 1;
+                            RegMode <= 1;
+                        end
+            JOP_B2:     begin
+                            Bus <= 1;
+                            YBusMode <= `BusRead;
+                        end
+            JOP_3:      begin
+                            ALUOp <= `ALUadd;
+                        end
+            JOP_4:      begin
+                            ZBusMode <= `BusWrite;
+                            MARBusMode <= `MARBusW;
+                        end
+            JOP_5:      begin
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                            XBusMode <= `BusRead;
+                        end
+            JOP_6:      begin
+                            ALUOp <= `ALUany;
+                        end
+            JOP_7:      begin
+                            ZBusMode <= `BusWrite;
+                            IRBusMode <= `IRBusR;
+                        end
+            JOP_8:      begin
+                            PCBusMode <= `PCBusR;
+                            MARBusMode <= `MARBusW;
                         end
         endcase
     end

@@ -40,3 +40,8 @@
 //MAR signals
 `define MARBusR 2'b01
 `define MARBusW 2'b10
+
+//generic register sigs
+`define BusRead 2'b01
+`define BusWrite 2'b10
+
