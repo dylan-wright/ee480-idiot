@@ -23,26 +23,26 @@ module control(
 input clk;
 input reset;
 
-output PCBusMode;
-output PCInc;
-output PCNext;
-output PCReset;
+output reg PCBusMode;
+output reg PCInc;
+output reg PCNext;
+output reg PCReset;
 
 input `WORD ir;
-output IRBusMode;
+output reg IRBusMode;
 
-output [2:0] ALUOp;
-output [1:0] XBusMode;
-output [1:0] YBusMode;
-output [1:0] ZBusMode;
+output reg [2:0] ALUOp;
+output reg [1:0] XBusMode;
+output reg [1:0] YBusMode;
+output reg [1:0] ZBusMode;
 
-output [5:0] RegAddr;
-output [1:0] RegMode;
+output reg [5:0] RegAddr;
+output reg [1:0] RegMode;
 
-output [1:0] MARBusMode;
-output [1:0] MDRBusMode;
-output [1:0] MDRMemMode;
-output [1:0] MemMode;
+output reg [1:0] MARBusMode;
+output reg [1:0] MDRBusMode;
+output reg [1:0] MDRMemMode;
+output reg [1:0] MemMode;
 
 //internals
 
@@ -142,6 +142,29 @@ end
 
 //sequential
 always @(posedge clk) begin
+    state <= next_state;
+    case (state)
+        PCLOAD_0:   begin
+                        PCReset <= 1;
+                    end
+        NEXTIR_0:   begin
+                        PCBusMode <= `PCBusW;
+                        MARBusMode <= `MARBusR;
+                    end
+        NEXTIR_1:   begin
+                        MemMode <= `memModeOut;
+                        MDRMemMode <= `MDRMemR;
+                    end
+        NEXTIR_2:   begin
+                        MDRBusMode <= `MDRBusW;
+                        IRBusMode <= `IRBusR;
+                    end
+        OPDECODE_0: begin
 
+                    end
+        INCPC_0:    begin
+                        PCNext <= 1;
+                    end
+    endcase
 end
 endmodule
