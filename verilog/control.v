@@ -23,13 +23,13 @@ module control(
 input clk;
 input reset;
 
-output reg PCBusMode;
+output reg [1:0] PCBusMode;
 output reg PCInc;
 output reg PCNext;
 output reg PCReset;
 
 input `WORD ir;
-output reg IRBusMode;
+output reg [1:0] IRBusMode;
 
 output reg [2:0] ALUOp;
 output reg [1:0] XBusMode;
