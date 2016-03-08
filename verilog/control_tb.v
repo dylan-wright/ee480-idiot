@@ -26,10 +26,19 @@ module control_tb;
                 MemMode);
 
     initial begin
+        $dumpfile("control_tb.vcd");
+        $dumpvars(0, control_tb);
         clk = 0;
+        reset = 1;
+        #1 clk = 1;
+        #1 clk = 0;
         reset = 0;
+#1 clk = 1;
+#1 clk = 0;
+#1 clk = 1;
+#1 clk = 0;
         ir = 16'b0;
     end
 
-    always #2 clk = !clk;
+    always #100 $finish;
 endmodule

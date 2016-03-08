@@ -142,29 +142,47 @@ end
 
 //sequential
 always @(posedge clk) begin
-    state <= next_state;
-    case (state)
-        PCLOAD_0:   begin
-                        PCReset <= 1;
-                    end
-        NEXTIR_0:   begin
-                        PCBusMode <= `PCBusW;
-                        MARBusMode <= `MARBusR;
-                    end
-        NEXTIR_1:   begin
-                        MemMode <= `memModeOut;
-                        MDRMemMode <= `MDRMemR;
-                    end
-        NEXTIR_2:   begin
-                        MDRBusMode <= `MDRBusW;
-                        IRBusMode <= `IRBusR;
-                    end
-        OPDECODE_0: begin
+    if (reset == 1) begin
+        PCBusMode <= 0;
+        PCInc <= 0;
+        PCReset <= 0;
+        IRBusMode <= 0;
+        ALUOp <= 0;
+        XBusMode <= 0;
+        YBusMode <= 0;
+        ZBusMode <= 0;
+        RegAddr <= 0;
+        RegMode <= 0;
+        MARBusMode <= 0;
+        MDRBusMode <= 0;
+        MDRMemMode <= 0;
+        MemMode <= 0;
+        state <= PCLOAD_0;
+    end else begin
+        state <= next_state;
+        case (state)
+            PCLOAD_0:   begin
+                            PCReset <= 1;
+                        end
+            NEXTIR_0:   begin
+                            PCBusMode <= `PCBusW;
+                            MARBusMode <= `MARBusR;
+                        end
+            NEXTIR_1:   begin
+                            MemMode <= `memModeOut;
+                            MDRMemMode <= `MDRMemR;
+                        end
+            NEXTIR_2:   begin
+                            MDRBusMode <= `MDRBusW;
+                            IRBusMode <= `IRBusR;
+                        end
+            OPDECODE_0: begin
 
-                    end
-        INCPC_0:    begin
-                        PCNext <= 1;
-                    end
-    endcase
+                        end
+            INCPC_0:    begin
+                            PCNext <= 1;
+                        end
+        endcase
+    end
 end
 endmodule
