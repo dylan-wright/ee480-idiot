@@ -4,7 +4,8 @@ module control(
     clk,
     reset,
     PCBusMode,
-    PCNext,
+    PCInc,
+    PCReset,
     ir,
     IRBusMode,
     ALUOp,
@@ -23,7 +24,9 @@ input clk;
 input reset;
 
 output PCBusMode;
+output PCInc;
 output PCNext;
+output PCReset;
 
 input `WORD ir;
 output IRBusMode;
@@ -42,7 +45,6 @@ output [1:0] MDRMemMode;
 output [1:0] MemMode;
 
 //internals
-reg `WORD state, next_state;
 
 //State def
 parameter PCLOAD_0 = 0,
@@ -81,9 +83,61 @@ parameter PCLOAD_0 = 0,
           JOP_8 = 708,
           INCPC_0 = 800;
 
+reg `WORD state, next_state;
+
 //combinational
 always @(state) begin
-    
+    next_state = 0;
+    case (state) 
+        PCLOAD_0:   next_state = NEXTIR_0;
+        NEXTIR_0:   next_state = NEXTIR_1;
+        NEXTIR_1:   next_state = NEXTIR_2;
+        NEXTIR_2:   next_state = OPDECODE_0;
+        OPDECODE_0: begin
+                        // switch on op code
+                        // for now lazy - see if loop works
+                        next_state = INCPC_0;
+                    end
+        ALUOP_0:    next_state = ALUOP_1;
+        ALUOP_1:    next_state = ALUOP_2;
+        ALUOP_2:    next_state = ALUOP_3;
+        ALUOP_3:    next_state = INCPC_0;
+        LDOP_0:     next_state = LDOP_1;
+        LDOP_1:     next_state = LDOP_2;
+        STOP_0:     next_state = STOP_1;
+        STOP_1:     next_state = STOP_2;
+        STOP_2:     next_state = INCPC_0;
+        LIOP_0:     next_state = LIOP_1;
+        LIOP_1:     next_state = LIOP_2;
+        LIOP_2:     next_state = LIOP_3;
+        LIOP_3:     next_state = LIOP_4;
+        LIOP_4:     next_state = LIOP_5;
+        LIOP_5:     next_state = INCPC_0;
+        JOP_0:      begin
+                        // switch on value of reg 2
+                        // for now lazy 
+                        next_state = 16'bX;
+                    end
+        JOP_A1:     next_state = JOP_A2;
+        JOP_A2:     next_state = JOP_A3;
+        JOP_A3:     next_state = JOP_A4;
+        JOP_A4:     next_state = JOP_5;
+        JOP_B1:     next_state = JOP_B2;
+        JOP_B2:     next_state = JOP_B3;
+        JOP_B3:     next_state = JOP_B4;
+        JOP_B4:     next_state = JOP_5;
+        JOP_5:      next_state = JOP_6;
+        JOP_6:      next_state = JOP_7;
+        JOP_7:      begin
+                        if (ir == 0) begin
+                            next_state = JOP_8;
+                        end else begin
+                            next_state = INCPC_0;
+                        end
+                    end
+        JOP_8:      next_state = INCPC_0;
+        INCPC_0:    next_state = NEXTIR_0;
+    endcase
 end
 
 //sequential
