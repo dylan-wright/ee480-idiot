@@ -23,3 +23,20 @@
 `define memModeIn 2'b01
 `define memModeOut 2'b10
 
+//IR signals
+`define IRBusR 2'b01
+`define IRBusW 2'b10
+
+//PC signals
+`define PCBusR 2'b01
+`define PCBusW 2'b10
+
+//MDR signals
+`define MDRMemR 2'b01
+`define MDRMemW 2'b10
+`define MDRBusR 2'b01
+`define MDRBusW 2'b10
+
+//MAR signals
+`define MARBusR 2'b01
+`define MARBusW 2'b10

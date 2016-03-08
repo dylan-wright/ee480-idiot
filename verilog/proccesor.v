@@ -33,6 +33,9 @@ module proccesor (
     reg [1:0] mem_mode;
     reg `WORD mem_address;
 
+    reg `WORD instruction_register;
+    reg `WORD program_counter;
+
     //Module instantiation
     alu alu_mod(X,
                 Y,
