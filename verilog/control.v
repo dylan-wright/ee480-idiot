@@ -1,78 +1,93 @@
 `include "signals.v"
 
-module control(clk, ir, bus,
-                ALUop, regMode, memMode,
-                PCBusMode, IRBusMode,
-                MARBusMode, MDRBusMode, MDRMemMode);
-    input clk;
-    output `WORD bus;
-    output [2:0] ALUop;
-    output [1:0] regMode;
-    output [1:0] memMode;
-    reg [7:0] state;
-    output [1:0] PCBusMode;
-    output [1:0] IRBusMode;
-    output [1:0] MARBusMode;
-    output [1:0] MDRBusMode;
-    output [1:0] MDRMemMode;
+module control(
+    clk,
+    reset,
+    PCBusMode,
+    PCNext,
+    ir,
+    IRBusMode,
+    ALUOp,
+    XBusMode,
+    YBusMode,
+    ZBusMode,
+    RegAddr,
+    RegMode,
+    MARBusMode,
+    MDRBusMode,
+    MDRMemMode,
+    MemMode
+);
+//Port dec
+input clk;
+input reset;
 
-    reg [1:0] pcbm, irbm, marbm, mdrbm, mdrmm;
+output PCBusMode;
+output PCNext;
 
-    assign PCBusMode = pcbm;
-    assign IRBusMode = irbm;
-    assign MARBusMode = marbm;
-    assign MDRBusMode = mdrbm;
-    assign MDRMemMode = mdrmm;
+input `WORD ir;
+output IRBusMode;
 
-    parameter LOADSTART_0       = 8'b00000000,
-              LOADSTART_1       = 8'b00000001,
-              LOADINSTRUCT_0    = 8'b00000010,
-              LOADINSTRUCT_1    = 8'b00000011,
-              LOADINSTRUCT_2    = 8'b00000100,
-              LOADINSTRUCT_3    = 8'b00000101;
+output [2:0] ALUOp;
+output [1:0] XBusMode;
+output [1:0] YBusMode;
+output [1:0] ZBusMode;
 
-    always @(state) begin
-        case (state)
-            LOADSTART_0:    begin 
-                                bus = 0;
-                                pcbm = `PCBusR;
-                            end
-            LOADSTART_1:    begin
-                                bus = 16'bZ;
-                                pscbm = 0;
-                            end
-            LOADINSTRUCT_0: begin 
-                                pcbm = `PCBusW;
-                                marbm = `MARBusR;
-                            end
-            LOADINSTRUCT_1: begin
-                                pcbm = 0;
-                                marbm = 0;
-                                memMode = `memModeOut;
-                                mdrbm = `MARBusR;
-                            end
-            LOADINSTRUCT_2: begin
-                                memMode = 0;
-                                mdrmm = 0;
-                                mdrbm = `MDRBusW;
-                                irbm = `IRBusR;
-                            end
-            LOADINSTRUCT_3: begin
-                                mdrbm = 0;
-                                irbm = 0;
-                            end
-        endcase
-    end
+output [5:0] RegAddr;
+output [1:0] RegMode;
 
-    always @(posedge clk) begin
-        case (state)
-            LOADSTART_0:    state = LOADSTART_1;
-            LOADSTART_1:    state = LOADINSTRUCT_0;
-            LOADINSTRUCT_0: state = LOADINSTRUCT_1;
-            LOADINSTRUCT_1: state = LOADINSTRUCT_2;
-            LOADINSTRUCT_2: state = LOADINSTRUCT_3;
-            LOADINSTRUCT_3: state = LOADINSTRUCT_0;
-            default:        state = 8'bX;
-        endcase
-    end
+output [1:0] MARBusMode;
+output [1:0] MDRBusMode;
+output [1:0] MDRMemMode;
+output [1:0] MemMode;
+
+//internals
+reg `WORD state, next_state;
+
+//State def
+parameter PCLOAD_0 = 0,
+          NEXTIR_0 = 100,
+          NEXTIR_1 = 101,
+          NEXTIR_2 = 102,
+          OPDECODE_0 = 200,
+          ALUOP_0 = 300,
+          ALUOP_1 = 301,
+          ALUOP_2 = 302,
+          ALUOP_3 = 303,
+          LDOP_0 = 400,
+          LDOP_1 = 401,
+          LDOP_2 = 402,
+          STOP_0 = 500,
+          STOP_1 = 501,
+          STOP_2 = 502,
+          LIOP_0 = 600,
+          LIOP_1 = 601,
+          LIOP_2 = 602,
+          LIOP_3 = 603,
+          LIOP_4 = 604,
+          LIOP_5 = 605,
+          JOP_0 = 700,
+          JOP_A1 = 701,
+          JOP_A2 = 702,
+          JOP_A3 = 703,
+          JOP_A4 = 704,
+          JOP_B1 = 751,
+          JOP_B2 = 752,
+          JOP_B3 = 753,
+          JOP_B4 = 754,
+          JOP_5 = 705,
+          JOP_6 = 706,
+          JOP_7 = 707,
+          JOP_8 = 708,
+          INCPC_0 = 800;
+
+//combinational
+always @(state) begin
+    
+end
+
+//sequential
+always @(posedge clk) begin
+
+end
 endmodule
