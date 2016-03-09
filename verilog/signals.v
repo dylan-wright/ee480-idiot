@@ -10,10 +10,11 @@
 //ALU Ops
 `define ALUadd 3'b000
 `define ALUand 3'b001
-`define ALUor  3'b010
-`define ALUxor 3'b011
-`define ALUany 3'b100
+`define ALUany 3'b010
+`define ALUdup 3'b011
+`define ALUor 3'b100
 `define ALUshr 3'b101
+`define ALUxor 3'b110
 
 //Register signals
 `define regModeIn 2'b01

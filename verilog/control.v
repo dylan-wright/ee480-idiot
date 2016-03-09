@@ -48,6 +48,8 @@ output reg [1:0] MemMode;
 
 //internals
 reg [1:0] regSel;
+wire [3:0] irOp;
+wire [5:0] irReg1, irReg2;
 
 //State def
 parameter PCLOAD_0 = 0,
@@ -86,6 +88,10 @@ parameter PCLOAD_0 = 0,
           INCPC_0 = 800;
 
 reg `WORD state, next_state;
+
+assign irOp = ir[15:12];
+assign irReg1 = ir[11:6];
+assign irReg2 = ir[5:0];
 
 //combinational
 always @(state) begin
