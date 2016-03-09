@@ -33,8 +33,17 @@ module proccesor (
     reg [1:0] mem_mode;
     reg `WORD mem_address;
 
-    reg `WORD instruction_register;
-    reg `WORD program_counter;
+    //other registers
+    reg `WORD ir;
+    reg `WORD pc;
+    reg `WORD Bus;
+
+    //control lines
+    wire PCInc, PCNext, PCReset;
+    wire [1:0] PCBusMode, IRBusMode, XBusMode, YBusMode, ZBusMode,
+               RegMode, MARBusMode, MDRBusMode, MDRMemMode, MemMode;
+    wire [5:0] RegSel;
+    wire `WORD bus;
 
     //Module instantiation
     alu alu_mod(X,
@@ -52,9 +61,55 @@ module proccesor (
                       mem_mode,
                       mem_address,
                       clk);
+    control control_mod(clk,
+                        reset,
+                        bus,
+                        PCBusMode,
+                        PCInc,
+                        PCReset,
+                        ir,
+                        IRBusMode,
+                        ALUop,
+                        XBusMode,
+                        YBusMode,
+                        ZBusMode,
+                        RegSel,
+                        RegMode,
+                        MARBusMode,
+                        MDRBusMode,
+                        MDRMemMode,
+                        MemMode);
 
     always @(posedge clk)
     begin
+        mem_mode <= MemMode;
+        
         Z <= z;
+
+        if (MARBusMode == `MARBusW) begin
+            Bus <= mem_data_out;
+        end else if (MARBusMode == `MARBusR) begin
+            mem_data_in <= Bus;
+        end
+
+        if (PCReset == 1) begin
+            pc <= 0;
+        end
+        if (PCInc == 1) begin
+            pc <= pc + 1;
+        end
+
+        if (PCBusMode == `PCBusW) begin
+            Bus <= pc;
+        end else if (PCBusMode == `PCBusR) begin
+            pc <= Bus;
+        end 
+
+        if (IRBusMode == `IRBusW) begin
+            Bus <= ir;
+        end else if (IRBusMode == `IRBusR) begin
+            ir <= Bus;
+        end
+
     end
 endmodule

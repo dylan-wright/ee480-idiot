@@ -10,10 +10,12 @@ module proccesor_tb;
     initial begin
         $dumpfile("proccesor_tb.vcd");
         $dumpvars(0, proccesor_tb);
-
+        reset = 1;
         clk = 0;
+        #1 clk = 1;
+        #1 clk = 0; reset = 0;
     end
 
     always #5 clk = !clk;
-    always #100 $finish;
+    always #1000 $finish;
 endmodule
