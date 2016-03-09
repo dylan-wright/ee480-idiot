@@ -5,7 +5,7 @@ module control(
     reset,
     Bus,
     PCBusMode,
-    PCInc,
+    PCNext,
     PCReset,
     ir,
     IRBusMode,
@@ -27,7 +27,6 @@ input reset;
 output reg `WORD Bus;
 
 output reg [1:0] PCBusMode;
-output reg PCInc;
 output reg PCNext;
 output reg PCReset;
 
@@ -145,7 +144,7 @@ end
 //sequential
 always @(posedge clk) begin
         PCBusMode <= 0;
-        PCInc <= 0;
+        PCNext <= 0;
         PCReset <= 0;
         IRBusMode <= 0;
         ALUOp <= 0;
@@ -168,9 +167,9 @@ always @(posedge clk) begin
                         end
             NEXTIR_0:   begin
                             PCBusMode <= `PCBusW;
-                            MARBusMode <= `MARBusR;
                         end
             NEXTIR_1:   begin
+                            MARBusMode <= `MARBusR;
                             MemMode <= `memModeOut;
                             MDRMemMode <= `MDRMemR;
                         end

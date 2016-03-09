@@ -31,12 +31,13 @@ module proccesor (
     wire `WORD mem_data_out;
     reg `WORD mem_data_in;
     reg [1:0] mem_mode;
-    reg `WORD mem_address;
+    reg `WORD mem_address;  //MAR
 
     //other registers
     reg `WORD ir;
     reg `WORD pc;
     reg `WORD Bus;
+    reg `WORD mdr;
 
     //control lines
     wire PCInc, PCNext, PCReset;
@@ -44,7 +45,6 @@ module proccesor (
                RegMode, MARBusMode, MDRBusMode, MDRMemMode, MemMode;
     wire [5:0] RegSel;
     wire `WORD bus;
-
     //Module instantiation
     alu alu_mod(X,
                 Y,
@@ -65,7 +65,7 @@ module proccesor (
                         reset,
                         bus,
                         PCBusMode,
-                        PCInc,
+                        PCNext,
                         PCReset,
                         ir,
                         IRBusMode,
@@ -87,29 +87,84 @@ module proccesor (
         Z <= z;
 
         if (MARBusMode == `MARBusW) begin
-            Bus <= mem_data_out;
-        end else if (MARBusMode == `MARBusR) begin
-            mem_data_in <= Bus;
-        end
+            Bus <= mdr;
+        end 
 
         if (PCReset == 1) begin
             pc <= 0;
         end
-        if (PCInc == 1) begin
+
+        
+        if (PCNext == 1) begin
             pc <= pc + 1;
+            $display("Increment pc");
         end
 
         if (PCBusMode == `PCBusW) begin
             Bus <= pc;
-        end else if (PCBusMode == `PCBusR) begin
-            pc <= Bus;
         end 
 
         if (IRBusMode == `IRBusW) begin
             Bus <= ir;
-        end else if (IRBusMode == `IRBusR) begin
+        end 
+
+        if (MARBusMode == `MARBusW) begin
+            Bus <= mem_address;
+        end 
+
+        if (MDRBusMode == `MDRBusW) begin
+            Bus <= mdr;
+        end 
+
+        if (MDRMemMode == `MDRMemR) begin
+            mdr <= mem_data_out;
+        end
+
+        if (XBusMode == `BusWrite) begin
+            Bus <= X;
+        end 
+
+        if (YBusMode == `BusWrite) begin
+            Bus <= Y;
+        end 
+
+        if (ZBusMode == `BusWrite) begin
+            Bus <= Z;
+        end
+    end
+    always @(negedge clk) begin
+
+        
+        if (MARBusMode == `MARBusR) begin
+            mdr <= Bus;
+        end
+
+        if (PCBusMode == `PCBusR) begin
+            pc <= Bus;
+        end 
+
+        if (IRBusMode == `IRBusR) begin
             ir <= Bus;
         end
 
+        if (MARBusMode == `MARBusR) begin
+            mem_address <= Bus;
+        end
+        
+        if (MDRBusMode == `MDRBusR) begin
+            mdr <= Bus;
+        end
+
+        if (XBusMode == `BusRead) begin
+            X <= Bus;
+        end
+
+        if (YBusMode == `BusRead) begin
+            Y <= Bus;
+        end
+
+        if (ZBusMode == `BusRead) begin
+            Z <= Bus;
+        end
     end
 endmodule
