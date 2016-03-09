@@ -55,6 +55,7 @@ parameter PCLOAD_0 = 0,
           NEXTIR_0 = 100,
           NEXTIR_1 = 101,
           NEXTIR_2 = 102,
+          NEXTIR_3 = 103,
           OPDECODE_0 = 200,
           ALUOP_0 = 300,
           ALUOP_1 = 301,
@@ -94,7 +95,8 @@ always @(state) begin
         PCLOAD_0:   next_state = NEXTIR_0;
         NEXTIR_0:   next_state = NEXTIR_1;
         NEXTIR_1:   next_state = NEXTIR_2;
-        NEXTIR_2:   next_state = OPDECODE_0;
+        NEXTIR_2:   next_state = NEXTIR_3;
+        NEXTIR_3:   next_state = OPDECODE_0;
         OPDECODE_0: begin
                         // switch on op code
                         // for now lazy - see if loop works
@@ -173,6 +175,10 @@ always @(posedge clk) begin
                             MDRMemMode <= `MDRMemR;
                         end
             NEXTIR_2:   begin
+                            MemMode <= `memModeOut;
+                            MDRMemMode <= `MDRMemR;
+                        end
+            NEXTIR_3:   begin
                             MDRBusMode <= `MDRBusW;
                             IRBusMode <= `IRBusR;
                         end

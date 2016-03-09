@@ -22,6 +22,6 @@ module memory(data_out, data_in, mode, address, clk);
     end
     
     initial begin
-        $readmemh("test.list", mem);
+        $readmemb("test.list", mem);
     end
 endmodule
