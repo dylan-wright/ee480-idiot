@@ -59,6 +59,7 @@ parameter PCLOAD_0 = 0,
           NEXTIR_2 = 102,
           NEXTIR_3 = 103,
           OPDECODE_0 = 200,
+          OPDECODE_1 = 201,
           ALUOP_0 = 300,
           ALUOP_1 = 301,
           ALUOP_2 = 302,
@@ -84,14 +85,18 @@ parameter PCLOAD_0 = 0,
           JOP_0 = 700,
           JOP_A1 = 701,
           JOP_A2 = 702,
+          JOP_A3 = 703,
+          JOP_A4 = 704,
           JOP_B1 = 751,
           JOP_B2 = 752,
-          JOP_3 = 703,
-          JOP_4 = 704,
+          JOP_B3 = 753,
+          JOP_B4 = 753,
           JOP_5 = 705,
           JOP_6 = 706,
           JOP_7 = 707,
           JOP_8 = 708,
+          JOP_9 = 709,
+          JOP_10 = 710,
           INCPC_0 = 800;
 
 reg `WORD state, next_state;
@@ -109,18 +114,22 @@ always @(state) begin
         NEXTIR_1:   next_state = NEXTIR_2;
         NEXTIR_2:   next_state = NEXTIR_3;
         NEXTIR_3:   next_state = OPDECODE_0;
-        OPDECODE_0: begin
+        OPDECODE_0: next_state = OPDECODE_1;
+        OPDECODE_1: begin
                         // switch on op code
                         // for now lazy - see if loop works
                         if (irOp < 8) begin
                             next_state = ALUOP_0;
-                        end else if (irOp == 8) begin
+                        end else if (irOp == 7) begin
                             next_state = LDOP_0;
-                        end else if (irOp == 9) begin
+                        end else if (irOp == 8) begin
                             next_state = STOP_0;
-                        end else if (irOp == 10) begin
+                        end else if (irOp == 9) begin
                             next_state = JOP_0;
+                        end else if (irOp == 10) begin
+                            next_state = LIOP_0;
                         end else if (irOp > 10) begin
+                            $finish;
                         end
                     end
         ALUOP_0:    next_state = ALUOP_1;
@@ -156,21 +165,25 @@ always @(state) begin
                         end
                     end
         JOP_A1:     next_state = JOP_A2;
-        JOP_A2:     next_state = JOP_3;
+        JOP_A2:     next_state = JOP_A3;
+        JOP_A3:     next_state = JOP_A4;
+        JOP_A4:     next_state = JOP_5;
         JOP_B1:     next_state = JOP_B2;
-        JOP_B2:     next_state = JOP_3;
-        JOP_3:      next_state = JOP_4;
-        JOP_4:      next_state = JOP_5;
+        JOP_B2:     next_state = JOP_B3;
+        JOP_B3:     next_state = JOP_B4;
+        JOP_B4:     next_state = JOP_5;
         JOP_5:      next_state = JOP_6;
         JOP_6:      next_state = JOP_7;
-        JOP_7:      begin
+        JOP_7:      next_state = JOP_8;
+        JOP_8:      next_state = JOP_9;
+        JOP_9:      begin
                         if (ir == 0) begin
-                            next_state = JOP_8;
+                            next_state = JOP_10;
                         end else begin
                             next_state = INCPC_0;
                         end
                     end
-        JOP_8:      next_state = INCPC_0;
+        JOP_10:      next_state = INCPC_0;
         INCPC_0:    next_state = NEXTIR_0;
     endcase
 end
@@ -219,7 +232,6 @@ always @(posedge clk) begin
                             IRBusMode <= `IRBusR;
                         end
             OPDECODE_0: begin
-
                         end
             INCPC_0:    begin
                             PCNext <= 1;
@@ -334,37 +346,56 @@ always @(posedge clk) begin
                             XBusMode <= `BusRead;
                         end
             JOP_A2:     begin
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                            XBusMode <= `BusRead;
+                        end
+            JOP_A3:     begin
+                            Bus <= -1;
+                            YBusMode <= `BusRead;
+                        end
+            JOP_A4:     begin
                             Bus <= -1;
                             YBusMode <= `BusRead;
                         end
             JOP_B1:     begin
                             regSel <= 1;
                             RegMode <= 1;
+                            XBusMode <= `BusRead;
                         end
             JOP_B2:     begin
+                            regSel <= 1;
+                            RegMode <= 1;
+                            XBusMode <= `BusRead;
+                        end
+            JOP_B3:     begin
                             Bus <= 1;
                             YBusMode <= `BusRead;
                         end
-            JOP_3:      begin
+            JOP_B4:     begin
+                            Bus <= 1;
+                            YBusMode <= `BusRead;
+                        end
+            JOP_5:      begin
                             ALUOp <= `ALUadd;
                         end
-            JOP_4:      begin
+            JOP_6:      begin
                             ZBusMode <= `BusWrite;
                             MARBusMode <= `MARBusW;
                         end
-            JOP_5:      begin
+            JOP_7:      begin
                             regSel <= 1;
                             RegMode <= `regModeOut;
                             XBusMode <= `BusRead;
                         end
-            JOP_6:      begin
+            JOP_8:      begin
                             ALUOp <= `ALUany;
                         end
-            JOP_7:      begin
+            JOP_9:      begin
                             ZBusMode <= `BusWrite;
                             IRBusMode <= `IRBusR;
                         end
-            JOP_8:      begin
+            JOP_10:      begin
                             PCBusMode <= `PCBusR;
                             MARBusMode <= `MARBusW;
                         end
