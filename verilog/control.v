@@ -15,6 +15,7 @@ module control(
     ZBusMode,
     RegAddr,
     RegMode,
+    RegClear,
     MARBusMode,
     MDRBusMode,
     MDRMemMode,
@@ -40,7 +41,7 @@ output reg [1:0] ZBusMode;
 
 output reg [5:0] RegAddr;
 output reg [1:0] RegMode;
-
+output reg RegClear;
 output reg [1:0] MARBusMode;
 output reg [1:0] MDRBusMode;
 output reg [1:0] MDRMemMode;
@@ -62,6 +63,12 @@ parameter PCLOAD_0 = 0,
           ALUOP_1 = 301,
           ALUOP_2 = 302,
           ALUOP_3 = 303,
+          ALUOP_4 = 304,
+          ALUOP_5 = 305,
+          ALUOP_6 = 306,
+          ALUOP_7 = 307,
+          ALUOP_8 = 308,
+          ALUOP_9 = 309,
           LDOP_0 = 400,
           LDOP_1 = 401,
           LDOP_2 = 402,
@@ -119,7 +126,13 @@ always @(state) begin
         ALUOP_0:    next_state = ALUOP_1;
         ALUOP_1:    next_state = ALUOP_2;
         ALUOP_2:    next_state = ALUOP_3;
-        ALUOP_3:    next_state = INCPC_0;
+        ALUOP_3:    next_state = ALUOP_4;
+        ALUOP_4:    next_state = ALUOP_5;
+        ALUOP_5:    next_state = ALUOP_6;
+        ALUOP_6:    next_state = ALUOP_7;
+        ALUOP_7:    next_state = ALUOP_8;
+        ALUOP_8:    next_state = ALUOP_9;
+        ALUOP_9:    next_state = INCPC_0;
         LDOP_0:     next_state = LDOP_1;
         LDOP_1:     next_state = LDOP_2;
         STOP_0:     next_state = STOP_1;
@@ -134,7 +147,13 @@ always @(state) begin
         JOP_0:      begin
                         // switch on value of reg 2
                         // for now lazy 
-                        next_state = 16'bX;
+                        if (irReg2 == 0) begin
+                            $finish;
+                        end else if (irReg2 == 1) begin
+                            next_state = JOP_B1;
+                        end else begin
+                            next_state = JOP_A1;
+                        end
                     end
         JOP_A1:     next_state = JOP_A2;
         JOP_A2:     next_state = JOP_3;
@@ -162,12 +181,14 @@ always @(posedge clk) begin
         PCNext <= 0;
         PCReset <= 0;
         IRBusMode <= 0;
-        ALUOp <= 0;
+        //ALUOp <= 0;
         XBusMode <= 0;
         YBusMode <= 0;
         ZBusMode <= 0;
-        RegAddr <= 0;
+        //RegAddr <= 0;
+        //regSel <= 0;
         RegMode <= 0;
+        RegClear <= 0;
         MARBusMode <= 0;
         MDRBusMode <= 0;
         MDRMemMode <= 0;
@@ -179,6 +200,7 @@ always @(posedge clk) begin
         case (state)
             PCLOAD_0:   begin
                             PCReset <= 1;
+                            //RegClear <= 1;
                         end
             NEXTIR_0:   begin
                             PCBusMode <= `PCBusW;
@@ -208,14 +230,45 @@ always @(posedge clk) begin
                             RegMode <= `regModeOut;
                         end
             ALUOP_1:    begin
+                            XBusMode <= `BusRead;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            ALUOP_2:    begin
+                            XBusMode <= `BusRead;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            ALUOP_3:    begin
                             YBusMode <= `BusRead;
                             regSel <= 2;
                             RegMode <= `regModeOut;
                         end
-            ALUOP_2:    begin
-                            //Instruction op code
+            ALUOP_4:    begin
+                            YBusMode <= `BusRead;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
                         end
-            ALUOP_3:    begin
+            ALUOP_5:    begin
+                            YBusMode <= `BusRead;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            ALUOP_6:    begin
+                            //Instruction op code
+                            ALUOp <= irOp;
+                        end
+            ALUOP_7:    begin
+                            ZBusMode <= `BusWrite;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
+            ALUOP_8:    begin
+                            ZBusMode <= `BusWrite;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
+            ALUOP_8:    begin
                             ZBusMode <= `BusWrite;
                             regSel <= 1;
                             RegMode <= `regModeIn;
@@ -316,6 +369,14 @@ always @(posedge clk) begin
                             MARBusMode <= `MARBusW;
                         end
         endcase
+    end
+end
+
+always @(regSel) begin
+    if (regSel == 1) begin
+        RegAddr = irReg1;
+    end else  if (regSel == 2) begin
+        RegAddr = irReg2;
     end
 end
 endmodule

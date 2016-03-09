@@ -75,15 +75,21 @@ module proccesor (
                         ZBusMode,
                         RegSel,
                         RegMode,
+                        RegClear,
                         MARBusMode,
                         MDRBusMode,
                         MDRMemMode,
                         MemMode);
 
+    always @(MemMode or RegMode or RegSel) begin
+        mem_mode <= MemMode;
+        reg_mode <= RegMode;
+        reg_sel <= RegSel;
+    end
+
     always @(posedge clk)
     begin
-        mem_mode <= MemMode;
-        
+        //reg_clear <= RegClear;
         Z <= z;
 
         if (MARBusMode == `MARBusW) begin
@@ -130,6 +136,10 @@ module proccesor (
         if (ZBusMode == `BusWrite) begin
             Bus <= Z;
         end
+
+        if (RegMode == `regModeOut) begin
+            Bus <= reg_data_out;
+        end
     end
     always @(negedge clk) begin
 
@@ -166,6 +176,10 @@ module proccesor (
 
         if (ZBusMode == `BusRead) begin
             Z <= Bus;
+        end
+
+        if (RegMode == `regModeIn) begin
+            reg_data_in <= Bus;
         end
     end
 endmodule
