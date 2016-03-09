@@ -97,7 +97,6 @@ module proccesor (
         
         if (PCNext == 1) begin
             pc <= pc + 1;
-            $display("Increment pc");
         end
 
         if (PCBusMode == `PCBusW) begin
@@ -143,8 +142,10 @@ module proccesor (
             pc <= Bus;
         end 
 
+        // This is a hacky way but it works.
+        // ir SHOULD only ever read from mdr so skip the slow dumb bus
         if (IRBusMode == `IRBusR) begin
-            ir <= Bus;
+            ir <= mdr;
         end
 
         if (MARBusMode == `MARBusR) begin
