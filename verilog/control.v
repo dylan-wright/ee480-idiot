@@ -105,7 +105,16 @@ always @(state) begin
         OPDECODE_0: begin
                         // switch on op code
                         // for now lazy - see if loop works
-                        next_state = INCPC_0;
+                        if (irOp < 8) begin
+                            next_state = ALUOP_0;
+                        end else if (irOp == 8) begin
+                            next_state = LDOP_0;
+                        end else if (irOp == 9) begin
+                            next_state = STOP_0;
+                        end else if (irOp == 10) begin
+                            next_state = JOP_0;
+                        end else if (irOp > 10) begin
+                        end
                     end
         ALUOP_0:    next_state = ALUOP_1;
         ALUOP_1:    next_state = ALUOP_2;
