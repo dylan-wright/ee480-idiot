@@ -41,8 +41,10 @@ module proccesor (
 
     //control lines
     wire PCInc, PCNext, PCReset;
-    wire [1:0] PCBusMode, IRBusMode, XBusMode, YBusMode, ZBusMode,
-               RegMode, MARBusMode, MDRBusMode, MDRMemMode, MemMode;
+    wire [1:0] PCBusMode, XBusMode, YBusMode, ZBusMode,
+               RegMode, MARBusMode, MDRBusMode, MDRMemMode, MemMode,
+               ControlBusMode;
+    wire [2:0] IRBusMode;
     wire [5:0] RegSel;
     wire `WORD bus;
     //Module instantiation
@@ -79,18 +81,25 @@ module proccesor (
                         MARBusMode,
                         MDRBusMode,
                         MDRMemMode,
-                        MemMode);
+                        MemMode,
+                        ControlBusMode);
 
-    always @(MemMode or RegMode or RegSel) begin
+    always @(MemMode or RegMode or RegSel or bus) begin
         mem_mode <= MemMode;
         reg_mode <= RegMode;
         reg_sel <= RegSel;
+    end
+    always @(z) begin
+        Z <= z;
     end
 
     always @(posedge clk)
     begin
         //reg_clear <= RegClear;
-        Z <= z;
+
+        if (ControlBusMode == `BusWrite) begin
+            Bus <= bus;
+        end
 
         if (MARBusMode == `MARBusW) begin
             Bus <= mdr;
@@ -156,6 +165,10 @@ module proccesor (
         // ir SHOULD only ever read from mdr so skip the slow dumb bus
         if (IRBusMode == `IRBusR) begin
             ir <= mdr;
+        end
+
+        if (IRBusMode == `IRZR) begin
+            ir <= Z;
         end
 
         if (MARBusMode == `MARBusR) begin

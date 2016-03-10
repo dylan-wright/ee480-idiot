@@ -5,6 +5,8 @@
  *      03-05 : added register file signals
  */
 
+`timescale 1ns/1ps
+
 `define WORD   [15:0]
 
 //ALU Ops
@@ -24,9 +26,10 @@
 `define memModeIn 2'b01
 `define memModeOut 2'b10
 
-//IR signals
-`define IRBusR 2'b01
-`define IRBusW 2'b10
+//IR signals 
+`define IRBusW 3'b001
+`define IRBusR 3'b010
+`define IRZR 3'b100
 
 //PC signals
 `define PCBusR 2'b01

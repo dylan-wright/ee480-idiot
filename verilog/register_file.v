@@ -37,6 +37,9 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
     end
 
     initial begin
-        $readmemh("reginit.list", registers);
+        registers[0] = 0;
+        registers[1] = 1;
+        registers[2] = 16'h8000;
+        registers[3] = 16'hffff;
     end
 endmodule

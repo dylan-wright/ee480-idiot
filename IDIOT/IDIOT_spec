@@ -9,7 +9,8 @@ c   Dylan Wright - dylan.wright@uky.edu
 
 .twoargs $rd, $rs := .this:4 rd:6 rs:6
 .alias .twoargs 0 add and any dup or shr xor ld st jz
-.immarg $rd, imm := .this:4 rd:6 0:6 imm:16
+;.immarg $rd, imm := .this:4 rd:6 0:6 imm:16
+.immarg $rd, imm := imm:16 .this:4 rd:6 0:6
 .alias .immarg 10 li
 sz $c := jz:4 c:6 one:6
 sys := jz:4 0:6 0:6
