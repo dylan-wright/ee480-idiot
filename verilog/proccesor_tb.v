@@ -16,5 +16,5 @@ module proccesor_tb;
     end
 
     always #5 clk = !clk;
-    //always #10000 $finish;
+    always #20000 $finish;
 endmodule

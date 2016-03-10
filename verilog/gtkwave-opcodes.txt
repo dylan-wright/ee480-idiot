@@ -1,0 +1,11 @@
+0 add
+1 and
+2 any
+3 dup
+4 or
+5 shr
+6 xor
+7 ld
+8 st
+9 jz
+A li

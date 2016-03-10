@@ -13,12 +13,16 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear,u0);
     //64 WORD width registers
     reg `WORD registers[0:63];
     output `WORD u0;
+    wire `WORD fp, sp, ra;
 
     //internal reset var
     reg [5:0] i;
 
     //assign data_out = d;
-assign u0 = registers[8];
+assign u0 = registers[11];
+assign fp = registers[5];
+assign sp = registers[4];
+assign ra = registers[6];
 
     always @(posedge clk) begin
         if (mode == `regModeIn) begin
@@ -43,5 +47,8 @@ assign u0 = registers[8];
         registers[1] = 1;
         registers[2] = 16'h8000;
         registers[3] = 16'hffff;
+        registers[4] = 0;
+        registers[5] = 0;
+        registers[6] = 0;
     end
 endmodule

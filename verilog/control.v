@@ -251,6 +251,7 @@ always @(posedge clk) begin
                             IRBusMode <= `IRBusR;
                         end
             OPDECODE_0: begin
+                            $display ("%h", ir);
                         end
             INCPC_0:    begin
                             PCNext <= 1;
