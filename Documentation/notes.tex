@@ -1,4 +1,5 @@
 %   Dylan Wright - dylan.wright@uky.edu
+%   Casey O'kane - casey.okane@uky.edu
 %   EE480 - Assignment 2: The Making Of An IDIOT
 %   note.tex : Implementer's Note
 %   Version:
@@ -6,6 +7,10 @@
 %	  03-06-2016 : Revised content slightly, added "General Approach" and 
 %			      "Issues" subsection. Wrote a basic abstract  that may be
 %				revised later. 
+%	 03-09-2016: Continued to revise content. Added initial information for
+%			     Verilog Module testing, General Approach, and the three
+%			     subsections related to issues. Also created a general
+%			     appendix. 
 
 \documentclass[conference]{IEEEtran}
 \usepackage{graphicx}
@@ -29,18 +34,18 @@ plan to exhaustively test the different components and logic of the design.
 \subsection{Instruction Set Architecture}
 In order to test the IDIOT instruction set specification a test framework was
 implemented. This framework is in the \texttt{IDIOT/} directory. The framework
-consists of the folowing files:
+consists of the following files:
 \subsubsection{\texttt{aik.py}}
 To automatically test files \texttt{aik.py} sends a PUSH request to the
 AIK cgi program. The returned html page is parsed and each section is output.
 The \texttt{.text} and \texttt{.data} sections are sent to stdout and the
 assembler messages are sent to \texttt{stderr}. This method is not ideal, an
-AIK executable would be prefferable. Sample run:
+AIK executable would be preferable. Sample run:
 \begin{verbatim}
  $ echo "file.idiot" | ./aik.py
 \end{verbatim}
 \subsubsection{\texttt{diss.py}}
-To make test results human readable, \texttt{diss.py} dissassembles a 
+To make test results human readable, \texttt{diss.py} disassembles a 
 \texttt{.out} file (the \texttt{.text} and \texttt{.data} segment of the 
 output of \texttt{aik.py}). The code is converted to binary and displayed in
 tabular format. Sample run:
@@ -60,7 +65,121 @@ framework was adapted from a script provided by Dr. Jaromczyk in the Fall
 \begin{verbatim}
  $ ./test
 \end{verbatim}
+
 \subsection{Verilog Modules}
+Every Verilog module included in the provided tarball has an associated
+testbench file, as denoted by the *\_tb.v extension that is used for each
+module.  
+
+
+
+
 \section{General Approach}
+Due to the complex nature of this assignment, the general approach 
+first involved forming a top down design, a comprehensive finite
+state machine (FSM) for the ISA instructions and then a far more specific
+FSM. Diagrams were created for these designs and they can be 
+found as \textbf{Figures 1, 2, 3, and 4} respectively in the \textbf{Appendix} 
+of this report. 
+
+One key decision that was made over the course of this project included 
+the decision to select a Harvard Architecture as a model for the memory unit
+rather than a Von Neumann model. The group ultimately decided to go 
+with this method as it would allow them to simultaneously read or write
+instructions to or from memory.This decision is reflected in the AIK 
+specification that was created \texttt{IDIOT\_Specv} found in the \texttt{IDIOT}
+directory of the provided tarball).
+
+After constructing the top down design, the AIK specification
+for the project was formed as \texttt{IDIOT\_Spec}. This specification primarily involved specifying IDIOT ISA 
+instructions using the conventions discussed discussed in class, for example all
+floating point instructions are actually system calls (or HALTs) which can be implemented as a special case of the jz instruction. 
+
+Once the AIK specification was created, skeleton modules \texttt{alu.v, control.v,
+memory.v, processor.v,} and \texttt{register\_file.v} followed. Initially these files were 
+written with basic functionality and later expanded using a top level approach,
+by then setting up \texttt{processor.v} and the completing the modules that it
+instantiates. \texttt{signals.v} contains many of the signals that would be used  to communicate 
+between devices along with a few global constants utilized throughout the 
+Verilog code (the 16 bit register constant WORD for example).
+
+Speaking more to \texttt{processor.v}, it instantiates the other necessary modules
+and then uses one level sensitive  and two edge sensitive always blocks to 
+simulate the processor. The specifics of these operations are detailed 
+in the diagrams represented in the \textbf{Appendix} of these notes
+ 
+After completing all of the mentioned modules, associated test benches were 
+constructed as stated in \textbf{B. Verilog Modules} of the \textbf{Testing} portion
+of these notes and issues wereresolved as they arose.
+ 
+
+
 \section{Issues}
+\subsection{Parts not implemented}
+Currently, all parts of the assignment have been implemented to a degree 
+there are just a few concerns surrounding wire values in certain test cases.
+
+Also, there will probably be more extensive tests implemented prior to the 
+completion of the project.
+
+I don't think we're going to include source with this particular commit though
+so we're going to go ahead and say that nothing works so that we can get 
+the 50\% or whatever for the project in case things go terribly terribly awry. 
+ 
+\subsection{Possible Errors}
+We're still in the early stages of testing so there is the possibility of many things 
+being incorrect. This is something that I will fill in with more detail as we 
+further approach completion with the testing of the assignment.
+
+Also, it might help to view the following \textbf{Notable Workarounds} section
+of this section, that might be another location were a problem might arise.
+
+\subsection{Notable Workarounds}
+\subsubsection{Instruction Register Assignment}
+In processor.v, when assigning to the instruction register, it was decided 
+that rather than storing the value stored on the Bus, that the value stored
+in the MDR should be used as the IR only reads from the MDR anyway.
+
+
+\appendix{Notable Diagrams}
+
+\clearpage 
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\textwidth]{TopDownDesignDraftp1.pdf}
+\caption{Top Down Design}
+\label{fig_sim}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\textwidth]{TopDownDesignDraftp2.pdf}
+\caption{General FSM}
+\label{fig_sim}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\textwidth]{ControlFSMp1.pdf}
+\caption{Detailed FSM without Jump Operations}
+\label{fig_sim}
+\end{figure}
+
+
+\clearpage
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\textwidth]{ControlFSMp2.pdf}
+\caption{Detailed FSM with Jump Operations}
+\label{fig_sim}
+\end{figure}
+
+
+
 \end{document}
