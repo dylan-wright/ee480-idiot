@@ -11,13 +11,17 @@ module memory(data_out, data_in, mode, address, clk);
 
     reg `WORD d;
 
-    assign data_out = (mode == `memModeOut) ? d : 16'bZ;
+    assign data_out = d;
 
     always @(posedge clk) begin
-        if (mode == `regModeIn) begin
+        if (mode == `memModeIn) begin
             mem[address] = data_in;
-        end else if (mode == `regModeOut) begin
+        end else if (mode == `memModeOut) begin
             d = mem[address];
         end
+    end
+    
+    initial begin
+        $readmemh("test-non-trivial.list", mem);
     end
 endmodule

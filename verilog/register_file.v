@@ -5,7 +5,7 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
     input [1:0] mode;
     input clk;
     input `WORD data_in;
-    output `WORD data_out;
+    output reg `WORD data_out;
     input clear;
 
     reg `WORD d;
@@ -16,24 +16,30 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
     //internal reset var
     reg [5:0] i;
 
-    assign data_out = (mode == `regModeOut) ? d : 16'bZ;
+    //assign data_out = d;
 
     always @(posedge clk) begin
         if (mode == `regModeIn) begin
-            $display("Write registers[%d] = %d", reg_sel, data_in);
             registers[reg_sel] = data_in;
-        end else if (mode == `regModeOut) begin
-            $display("Read register[%d] -> %d", reg_sel, d);
-            d = registers[reg_sel];
         end
+        else if (mode == `regModeOut) begin
+            data_out = registers[reg_sel];
+        end
+
     end
 
-    always @(posedge clear) begin
-        $display("Clear register file");
+    always @(clear) begin
         i = 0;
         repeat(64) begin
             registers[i] = 0;
             i+=1;
         end
+    end
+
+    initial begin
+        registers[0] = 0;
+        registers[1] = 1;
+        registers[2] = 16'h8000;
+        registers[3] = 16'hffff;
     end
 endmodule

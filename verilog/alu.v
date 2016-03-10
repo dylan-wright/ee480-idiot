@@ -20,9 +20,10 @@ module alu(X, Y, ALUop, Z);
             `ALUand:    Z = X & Y;
             `ALUor:     Z = X | Y;
             `ALUxor:    Z = X ^ Y;
-            `ALUany:    Z = X != 0;
+            `ALUany:    Z = X != 0 ? 1 : 0;
             `ALUshr:    Z = X >> 1;
-            default:    Z = 16'b1;
+            `ALUdup:    Z = X;
+            default:    Z = 16'bz;
         endcase
     end
 endmodule
