@@ -106,6 +106,7 @@ parameter PCLOAD_0 = 0,
           JOP_10 = 710,
           JOP_11 = 711,
           JOP_12 = 712,
+          JOP_13 = 713,
           INCPC_0 = 800;
 
 reg `WORD state, next_state;
@@ -192,14 +193,15 @@ always @(state) begin
         JOP_8:      next_state = JOP_9;
         JOP_9:      next_state = JOP_10;
         JOP_10:     next_state = JOP_11;
-        JOP_11:     begin
+        JOP_11:     next_state = JOP_12;
+        JOP_12:     begin
                         if (ir == 0) begin
-                            next_state = JOP_12;
+                            next_state = JOP_13;
                         end else begin
                             next_state = INCPC_0;
                         end
                     end
-        JOP_12:     next_state = INCPC_0;
+        JOP_13:     next_state = INCPC_0;
         INCPC_0:    next_state = NEXTIR_0;
     endcase
 end
@@ -380,16 +382,16 @@ always @(posedge clk) begin
                             RegMode <= `regModeIn;
                         end
             JOP_0:      begin
-                            regSel <= 1;
+                            regSel <= 2;
                             RegMode <= `regModeOut;
                         end
             JOP_A1:     begin
-                            regSel <= 1;
+                            regSel <= 2;
                             RegMode <= `regModeOut;
                             XBusMode <= `BusRead;
                         end
             JOP_A2:     begin
-                            regSel <= 1;
+                            regSel <= 2;
                             RegMode <= `regModeOut;
                             XBusMode <= `BusRead;
                         end
@@ -404,12 +406,12 @@ always @(posedge clk) begin
                             YBusMode <= `BusRead;
                         end
             JOP_B1:     begin
-                            regSel <= 1;
+                            regSel <= 2;
                             RegMode <= 1;
                             XBusMode <= `BusRead;
                         end
             JOP_B2:     begin
-                            regSel <= 1;
+                            regSel <= 2;
                             RegMode <= 1;
                             XBusMode <= `BusRead;
                         end
@@ -425,6 +427,7 @@ always @(posedge clk) begin
                         end
             JOP_5:      begin
                             ALUOp <= `ALUadd;
+                            ZBusMode <= `BusWrite;
                         end
             JOP_6:      begin
                             ZBusMode <= `BusWrite;
@@ -433,23 +436,26 @@ always @(posedge clk) begin
             JOP_7:      begin
                             regSel <= 1;
                             RegMode <= `regModeOut;
-                            XBusMode <= `BusRead;
+                            //XBusMode <= `BusRead;
                         end
             JOP_8:      begin
                             regSel <= 1;
                             RegMode <= `regModeOut;
-                            XBusMode <= `BusRead;
                         end
             JOP_9:      begin
-                            ALUOp <= `ALUany;
+                            XBusMode <= `BusRead;
                             IRBusMode <= `IRZR; 
                         end
             JOP_10:     begin
+                            ALUOp <= `ALUany;
                             IRBusMode <= `IRZR; 
                         end
             JOP_11:     begin
                         end
             JOP_12:     begin
+                            MARBusMode <= `MARBusW;
+                        end
+            JOP_13:     begin
                             PCBusMode <= `PCBusR;
                             MARBusMode <= `MARBusW;
                         end
