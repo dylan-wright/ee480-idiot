@@ -20,10 +20,10 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
 
     always @(posedge clk) begin
         if (mode == `regModeIn) begin
-            registers[reg_sel] = data_in;
+            registers[reg_sel] <= data_in;
         end
         else if (mode == `regModeOut) begin
-            data_out = registers[reg_sel];
+            data_out <= registers[reg_sel];
         end
 
     end

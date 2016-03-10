@@ -1,4 +1,3 @@
-`include "signals.v"
 
 module proccesor_tb;
     reg clk;

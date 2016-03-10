@@ -187,9 +187,9 @@ module proccesor (
             Y <= Bus;
         end
 
-        if (ZBusMode == `BusRead) begin
-            Z <= Bus;
-        end
+        //if (ZBusMode == `BusRead) begin
+        //    Z <= Bus;
+        //end
 
         if (RegMode == `regModeIn) begin
             reg_data_in <= Bus;

@@ -18,7 +18,7 @@ $(SIMS): $(COMPILED)
 	$(SIMENGINE) $(COMPILED)
 
 covrep: $(SIMS)
-	covered score -t $(TESTS:.v=) $(COVMODS) -I . -vcd $(SIMS) -o top.cdd
+	covered score -t $(TESTS:.v=) $(COVMODS) -e memory -I . -vcd $(SIMS) -o top.cdd
 	covered report -d v top.cdd | less
 
 clean:
