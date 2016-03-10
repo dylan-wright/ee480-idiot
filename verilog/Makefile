@@ -2,11 +2,11 @@ VERILOG=iverilog
 SIMENGINE=vvp
 WAVEVIEWER=gtkwave
 
-MODULES=alu.v register_file.v proccesor.v
+MODULES=alu.v register_file.v proccesor.v control.v memory.v
 COMPILED=dsn
 HEADERS=signals.v
-TESTS=alu_tb.v
-SIMS=alu_tb.vcd
+TESTS=proccesor_tb.v
+SIMS=proccesor_tb.vcd
 COVMODS=$(MODULES:%=-v %) $(TESTS:%=-v %) 
 
 all: $(SIMS)
@@ -18,7 +18,7 @@ $(SIMS): $(COMPILED)
 	$(SIMENGINE) $(COMPILED)
 
 covrep: $(SIMS)
-	covered score -t alu_tb $(COVMODS) -I . -vcd $(SIMS) -o top.cdd
+	covered score -t $(TESTS:.v=) $(COVMODS) -I . -vcd $(SIMS) -o top.cdd
 	covered report -d v top.cdd | less
 
 clean:
