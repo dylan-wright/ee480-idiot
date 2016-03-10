@@ -299,10 +299,10 @@ always @(posedge clk) begin
                             regSel <= 1;
                             RegMode <= `regModeIn;
                         end
-            ALUOP_8:    begin
+            ALUOP_9:    begin
                             ZBusMode <= `BusWrite;
                             regSel <= 1;
-                            RegMode <= `regModeIn;
+                            //RegMode <= `regModeIn;
                         end
             LDOP_0:     begin
                             MARBusMode <= `MARBusR;
@@ -463,7 +463,7 @@ always @(posedge clk) begin
     end
 end
 
-always @(regSel) begin
+always @(regSel or ir) begin
     if (regSel == 1) begin
         RegAddr = irReg1;
     end else  if (regSel == 2) begin

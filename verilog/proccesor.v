@@ -47,6 +47,8 @@ module proccesor (
     wire [2:0] IRBusMode;
     wire [5:0] RegSel;
     wire `WORD bus;
+    wire `WORD registers;
+
     //Module instantiation
     alu alu_mod(X,
                 Y,
@@ -57,7 +59,8 @@ module proccesor (
                                     reg_sel,
                                     reg_mode,
                                     clk,
-                                    reg_clear);
+                                    reg_clear,
+                                    registers);
     memory memory_mod(mem_data_out,
                       mem_data_in,
                       mem_mode,

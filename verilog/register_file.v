@@ -1,6 +1,6 @@
 `include "signals.v"
 
-module register_file(data_out, data_in, reg_sel, mode, clk, clear);
+module register_file(data_out, data_in, reg_sel, mode, clk, clear,u0);
     input [5:0] reg_sel;
     input [1:0] mode;
     input clk;
@@ -12,11 +12,13 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear);
 
     //64 WORD width registers
     reg `WORD registers[0:63];
+    output `WORD u0;
 
     //internal reset var
     reg [5:0] i;
 
     //assign data_out = d;
+assign u0 = registers[8];
 
     always @(posedge clk) begin
         if (mode == `regModeIn) begin
