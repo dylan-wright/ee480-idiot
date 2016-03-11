@@ -75,9 +75,13 @@ parameter PCLOAD_0 = 0,
           LDOP_0 = 400,
           LDOP_1 = 401,
           LDOP_2 = 402,
+          LDOP_3 = 403,
           STOP_0 = 500,
           STOP_1 = 501,
           STOP_2 = 502,
+          STOP_3 = 503,
+          STOP_4 = 504,
+          STOP_5 = 505,
           LIOP_0 = 600,
           LIOP_1 = 601,
           LIOP_2 = 602,
@@ -128,7 +132,7 @@ always @(state) begin
         OPDECODE_1: begin
                         // switch on op code
                         // for now lazy - see if loop works
-                        if (irOp < 8) begin
+                        if (irOp < 7) begin
                             next_state = ALUOP_0;
                         end else if (irOp == 7) begin
                             next_state = LDOP_0;
@@ -154,9 +158,14 @@ always @(state) begin
         ALUOP_9:    next_state = INCPC_0;
         LDOP_0:     next_state = LDOP_1;
         LDOP_1:     next_state = LDOP_2;
+        LDOP_2:     next_state = LDOP_3;
+        LDOP_3:     next_state = INCPC_0;
         STOP_0:     next_state = STOP_1;
         STOP_1:     next_state = STOP_2;
-        STOP_2:     next_state = INCPC_0;
+        STOP_2:     next_state = STOP_3;
+        STOP_3:     next_state = STOP_4;
+        STOP_4:     next_state = STOP_5;
+        STOP_5:     next_state = INCPC_0;
         LIOP_0:     next_state = LIOP_1;
         LIOP_1:     next_state = LIOP_2;
         LIOP_2:     next_state = LIOP_3;
@@ -319,17 +328,36 @@ always @(posedge clk) begin
                             regSel <= 1;
                             RegMode <= `regModeIn;
                         end
+            LDOP_3:     begin
+                            MDRBusMode <= `MDRBusW;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
             STOP_0:     begin
                             MARBusMode <= `MARBusR;
                             regSel <= 2;
                             RegMode <= `regModeOut;
                         end
             STOP_1:     begin
+                            MARBusMode <= `MARBusR;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_2:     begin
                             MDRBusMode <= `MDRBusR;
                             regSel <= 1;
                             RegMode <= `regModeOut;
                         end
-            STOP_2:     begin
+            STOP_3:     begin
+                            MDRBusMode <= `MDRBusR;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_4:     begin
+                            MDRMemMode <= `MDRMemW;
+                            MemMode <= `memModeIn;
+                        end
+            STOP_5:     begin
                             MDRMemMode <= `MDRMemW;
                             MemMode <= `memModeIn;
                         end

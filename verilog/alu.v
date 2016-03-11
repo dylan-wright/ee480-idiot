@@ -22,7 +22,7 @@ module alu(X, Y, ALUop, Z);
             `ALUxor:    Z = X ^ Y;
             `ALUany:    Z = X != 0 ? 1 : 0;
             `ALUshr:    Z = X >> 1;
-            `ALUdup:    Z = X;
+            `ALUdup:    Z = Y;
             default:    Z = 16'bz;
         endcase
     end

@@ -19,7 +19,7 @@ module register_file(data_out, data_in, reg_sel, mode, clk, clear,u0);
     reg [5:0] i;
 
     //assign data_out = d;
-assign u0 = registers[11];
+assign u0 = registers[8];
 assign fp = registers[5];
 assign sp = registers[4];
 assign ra = registers[6];
