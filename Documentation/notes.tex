@@ -153,17 +153,6 @@ of these notes and issues wereresolved as they arose.
 
 
 \section{Issues}
-\subsection{Parts not implemented}
-Currently, all parts of the assignment have been implemented to a degree 
-there are just a few concerns surrounding wire values in certain test cases.
-
-Also, there will probably be more extensive tests implemented prior to the 
-completion of the project.
-
-I don't think we're going to include source with this particular commit though
-so we're going to go ahead and say that nothing works so that we can get 
-the 50\% or whatever for the project in case things go terribly terribly awry. 
- 
 \subsection{Possible Errors}
 We're still in the early stages of testing so there is the possibility of many things 
 being incorrect. This is something that I will fill in with more detail as we 
@@ -177,7 +166,12 @@ of this section, that might be another location were a problem might arise.
 In processor.v, when assigning to the instruction register, it was decided 
 that rather than storing the value stored on the Bus, that the value stored
 in the MDR should be used as the IR only reads from the MDR anyway.
-
+\subsubsection{Control FSM Timing}
+The original design for the finite state machine was much smaller than the 
+final one present in the project. In order to amilliorate timing issues, a
+number of state were expanded into either multiple states or lengthened. This 
+was usually due to a register not latching in time or the bus not having the
+right value. While this is not an ideal solution to the problem, it does work.
 
 \appendix{Notable Diagrams}
 
