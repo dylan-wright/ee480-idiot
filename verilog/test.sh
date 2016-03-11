@@ -1,5 +1,5 @@
 #!/bin/bash
-
+dir=tests/proccesor/
 # alu
 echo "--> Executing alu_tb"
 iverilog alu.v alu_tb.v signals.v
@@ -20,7 +20,7 @@ rm a.out register_file_tb.vcd
 echo
 
 # proccessor/control
-for f in tests/*
+for f in $dir*.vmem
 do
     base=${f%.vmem}
     testname=${base##*/}

@@ -25,6 +25,6 @@ module memory(data_out, data_in, mode, address, clk);
     
     initial begin
         //$readmemh("test-custom.vmem", mem);
-        $readmemh("tests/test-non-trivial.vmem", mem);
+        $readmemh("tests/proccesor/proccesor-test-non-trivial.vmem", mem);
     end
 endmodule
