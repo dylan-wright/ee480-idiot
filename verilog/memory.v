@@ -11,6 +11,8 @@ module memory(data_out, data_in, mode, address, clk);
 
     reg `WORD d;
 
+    wire `WORD testout;
+
     assign data_out = d;
 
     always @(posedge clk) begin
@@ -22,6 +24,7 @@ module memory(data_out, data_in, mode, address, clk);
     end
     
     initial begin
-        $readmemh("test-non-trivial.list", mem);
+        //$readmemh("test-custom.vmem", mem);
+        $readmemh("tests/proccesor/proccesor-test-non-trivial.vmem", mem);
     end
 endmodule

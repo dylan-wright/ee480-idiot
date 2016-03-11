@@ -8,6 +8,8 @@ HEADERS=signals.v
 TESTS=proccesor_tb.v
 SIMS=proccesor_tb.vcd
 COVMODS=$(MODULES:%=-v %) $(TESTS:%=-v %) 
+COVDB=top.cdd
+COVREP=covreport.txt
 
 all: $(SIMS)
 
@@ -18,8 +20,8 @@ $(SIMS): $(COMPILED)
 	$(SIMENGINE) $(COMPILED)
 
 covrep: $(SIMS)
-	covered score -t $(TESTS:.v=) $(COVMODS) -e memory -I . -vcd $(SIMS) -o top.cdd
-	covered report -d v top.cdd | less
+	covered score -t $(TESTS:.v=) $(COVMODS) -I . -e memory -vcd $(SIMS) -o $(COVDB)
+	covered report -d v $(COVDB) > $(COVREP)
 
 clean:
-	rm $(COMPILED) $(SIMS)
+	rm $(COMPILED) $(SIMS) $(COVDB) $(COVREP)

@@ -1,0 +1,23 @@
+dup $u0, $0
+_cond:
+li $u1, 10
+xor $u1, $all
+add $u1, $u0
+li $u10,_over
+jz $u1,$u10
+_inc:
+add $u0, $1
+li $u10,_cond
+jz $0,$u10
+_body:
+li $u10,_inc
+jz $0,$u10
+_over:
+and $u0, $u0
+or $u0, $u0
+shr $u0, $u0
+sz $0
+jz $0, $sign
+st $u0, $all
+ld $u0, $all
+jz $0, $0

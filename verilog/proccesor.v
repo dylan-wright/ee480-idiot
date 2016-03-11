@@ -197,5 +197,9 @@ module proccesor (
         if (RegMode == `regModeIn) begin
             reg_data_in <= Bus;
         end
+        
+        if (MemMode == `memModeIn) begin
+            mem_data_in <= mdr;
+        end
     end
 endmodule

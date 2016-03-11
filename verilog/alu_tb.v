@@ -14,6 +14,14 @@ module alu_tb;
     reg `WORD Z;
     wire `WORD z;
     reg [2:0] ALUop;
+    
+    reg `WORD Xvector[0:2];
+    reg `WORD Yvector[0:2];
+    reg `WORD Zvector[0:2];
+    reg [2:0] OpVector[0:2];
+
+    integer test_num, test_num_max;
+
     alu aluuut(X,Y,ALUop,z);
 
     integer correct, failed;
@@ -22,33 +30,36 @@ module alu_tb;
     initial begin
         correct = 0;
         failed = 0;
+        test_num_max = 3;
+
         X = 0;
         Y = 0;
         $dumpfile("alu_tb.vcd");
         $dumpvars(0, alu_tb);
+        
+        $readmemh("tests/aluXVector.vmem", Xvector);
+        $readmemh("tests/aluYVector.vmem", Yvector);
+        $readmemh("tests/aluZVector.vmem", Zvector);
+        $readmemb("tests/aluOpVector.vmem", OpVector);
 
-        //wait a bit
-        #5;
-
-        //loop through operators
-        for (ALUop = `ALUadd; ALUop < `ALUshr; ALUop+=1)
-        begin
-            // 0000 0000
+        for (test_num = 0; test_num < test_num_max; test_num += 1) begin
+            X <= Xvector[test_num];
+            Y <= Yvector[test_num];
+            ALUop <= OpVector[test_num];
             #2;
-            // ffff 0000
-            X = 16'hffff;
-#2;
-            // ffff ffff
-            Y = 16'hffff;
-#2;
-            // 0000 ffff
-            X = 0;
-#2;
+
+            $display("%d %d %d", X, Y, Z);
+            if (Zvector[test_num] != Z) begin
+                $display("Failure test %d", test_num);
+                failed += 1;
+            end else begin
+                correct += 1;
+            end
         end
 
         $display("Testing finished with %d correct %d failed", correct, failed);
         $finish;
     end
+    always #1 Z <= z;
 
-    always #1 Z = z;
 endmodule

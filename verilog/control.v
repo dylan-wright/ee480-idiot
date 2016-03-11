@@ -75,9 +75,15 @@ parameter PCLOAD_0 = 0,
           LDOP_0 = 400,
           LDOP_1 = 401,
           LDOP_2 = 402,
+          LDOP_3 = 403,
+          LDOP_4 = 404,
+          LDOP_5 = 405,
           STOP_0 = 500,
           STOP_1 = 501,
           STOP_2 = 502,
+          STOP_3 = 503,
+          STOP_4 = 504,
+          STOP_5 = 505,
           LIOP_0 = 600,
           LIOP_1 = 601,
           LIOP_2 = 602,
@@ -97,7 +103,7 @@ parameter PCLOAD_0 = 0,
           JOP_B1 = 751,
           JOP_B2 = 752,
           JOP_B3 = 753,
-          JOP_B4 = 753,
+          JOP_B4 = 754,
           JOP_5 = 705,
           JOP_6 = 706,
           JOP_7 = 707,
@@ -128,7 +134,7 @@ always @(state) begin
         OPDECODE_1: begin
                         // switch on op code
                         // for now lazy - see if loop works
-                        if (irOp < 8) begin
+                        if (irOp < 7) begin
                             next_state = ALUOP_0;
                         end else if (irOp == 7) begin
                             next_state = LDOP_0;
@@ -154,9 +160,16 @@ always @(state) begin
         ALUOP_9:    next_state = INCPC_0;
         LDOP_0:     next_state = LDOP_1;
         LDOP_1:     next_state = LDOP_2;
+        LDOP_2:     next_state = LDOP_3;
+        LDOP_3:     next_state = LDOP_4;
+        LDOP_4:     next_state = LDOP_5;
+        LDOP_5:     next_state = INCPC_0;
         STOP_0:     next_state = STOP_1;
         STOP_1:     next_state = STOP_2;
-        STOP_2:     next_state = INCPC_0;
+        STOP_2:     next_state = STOP_3;
+        STOP_3:     next_state = STOP_4;
+        STOP_4:     next_state = STOP_5;
+        STOP_5:     next_state = INCPC_0;
         LIOP_0:     next_state = LIOP_1;
         LIOP_1:     next_state = LIOP_2;
         LIOP_2:     next_state = LIOP_3;
@@ -225,6 +238,7 @@ always @(posedge clk) begin
         MDRMemMode <= 0;
         MemMode <= 0;
         ControlBusMode <= 0;
+        Bus <= 16'hZ;
     if (reset == 1) begin
         state <= PCLOAD_0;
     end else begin
@@ -251,7 +265,6 @@ always @(posedge clk) begin
                             IRBusMode <= `IRBusR;
                         end
             OPDECODE_0: begin
-                            $display ("%h", ir);
                         end
             INCPC_0:    begin
                             PCNext <= 1;
@@ -311,10 +324,24 @@ always @(posedge clk) begin
                             RegMode <= `regModeOut;
                         end
             LDOP_1:     begin
-                            MDRMemMode <= `MDRMemR;
-                            MemMode <= `memModeIn;
+                            MARBusMode <= `MARBusR;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
                         end
             LDOP_2:     begin
+                            MDRMemMode <= `MDRMemR;
+                            MemMode <= `memModeOut;
+                        end
+            LDOP_3:     begin
+                            MDRMemMode <= `MDRMemR;
+                            MemMode <= `memModeOut;
+                        end
+            LDOP_4:     begin
+                            MDRBusMode <= `MDRBusW;
+                            regSel <= 1;
+                            RegMode <= `regModeIn;
+                        end
+            LDOP_5:     begin
                             MDRBusMode <= `MDRBusW;
                             regSel <= 1;
                             RegMode <= `regModeIn;
@@ -325,11 +352,25 @@ always @(posedge clk) begin
                             RegMode <= `regModeOut;
                         end
             STOP_1:     begin
+                            MARBusMode <= `MARBusR;
+                            regSel <= 2;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_2:     begin
                             MDRBusMode <= `MDRBusR;
                             regSel <= 1;
                             RegMode <= `regModeOut;
                         end
-            STOP_2:     begin
+            STOP_3:     begin
+                            MDRBusMode <= `MDRBusR;
+                            regSel <= 1;
+                            RegMode <= `regModeOut;
+                        end
+            STOP_4:     begin
+                            MDRMemMode <= `MDRMemW;
+                            MemMode <= `memModeIn;
+                        end
+            STOP_5:     begin
                             MDRMemMode <= `MDRMemW;
                             MemMode <= `memModeIn;
                         end
@@ -408,12 +449,12 @@ always @(posedge clk) begin
                         end
             JOP_B1:     begin
                             regSel <= 2;
-                            RegMode <= 1;
+                            PCBusMode <= `PCBusW;
                             XBusMode <= `BusRead;
                         end
             JOP_B2:     begin
                             regSel <= 2;
-                            RegMode <= 1;
+                            PCBusMode <= `PCBusW;
                             XBusMode <= `BusRead;
                         end
             JOP_B3:     begin
