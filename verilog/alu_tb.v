@@ -27,8 +27,6 @@ module alu_tb;
     integer correct, failed;
     reg `WORD calc;
 
-    assign z = Z;
-
     initial begin
         correct = 0;
         failed = 0;
@@ -48,12 +46,20 @@ module alu_tb;
             X <= Xvector[test_num];
             Y <= Yvector[test_num];
             ALUop <= OpVector[test_num];
+            #2;
 
-            
+            $display("%d %d %d", X, Y, Z);
+            if (Zvector[test_num] != Z) begin
+                $display("Failure test %d", test_num);
+                failed += 1;
+            end else begin
+                correct += 1;
+            end
         end
 
         $display("Testing finished with %d correct %d failed", correct, failed);
         $finish;
     end
+    always #1 Z <= z;
 
 endmodule
