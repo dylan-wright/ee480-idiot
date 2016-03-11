@@ -15,10 +15,10 @@ module alu_tb;
     wire `WORD z;
     reg [2:0] ALUop;
     
-    reg `WORD Xvector[0:2];
-    reg `WORD Yvector[0:2];
-    reg `WORD Zvector[0:2];
-    reg [2:0] OpVector[0:2];
+    reg `WORD Xvector[0:26];
+    reg `WORD Yvector[0:26];
+    reg `WORD Zvector[0:26];
+    reg [2:0] OpVector[0:26];
 
     integer test_num, test_num_max;
 
@@ -30,7 +30,7 @@ module alu_tb;
     initial begin
         correct = 0;
         failed = 0;
-        test_num_max = 3;
+        test_num_max = 27;
 
         X = 0;
         Y = 0;
