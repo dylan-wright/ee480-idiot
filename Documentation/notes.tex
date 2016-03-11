@@ -72,6 +72,28 @@ After completing all of the mentioned modules, associated test benches were
 constructed as stated in \textbf{B. Verilog Modules} of the \textbf{Testing} portion
 of these notes and issues wereresolved as they arose.
  
+\section{Implementation}
+This section describes how each module was implemented.
+\subsection{ALU}
+The ALU was implemented as a simple combinational circuit. The module switches
+on the opcode and uses high level code to implement each operation. This may
+note produce the minimal solution, but it works. Dup did not need to be 
+implemented as an ALU operation but it was to make the control flow simpler.
+\subsection{Register File}
+The register file was implemented as a 64 word (16 bit) deep memory. It inputs
+a register address which will be sourced from the control logic in the module
+which instantiates it. This address is used to select which register to save
+into. The first 8 registers each recieve an initial value. 
+
+The read only registers are only read only in the sense that the proccesor
+trusts the programmer/compiler to not write into a read only register.
+\subsection{Memory}
+The memory is implemented in the same way as the register file but with
+a deeper address space. Otherwise it is essentially the same.
+\subsection{Control}
+The control module implements a FSM which defines which control signals to 
+set when. This module also can control the bus, and read the instruction register.
+
 \section{Testing}
 \subsection{Instruction Set Architecture}
 In order to test the IDIOT instruction set specification a test framework was
