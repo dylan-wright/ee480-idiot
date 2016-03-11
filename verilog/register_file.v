@@ -24,7 +24,7 @@ assign fp = registers[5];
 assign sp = registers[4];
 assign ra = registers[6];
 
-    always @(posedge clk) begin
+    always @(clk) begin
         if (mode == `regModeIn) begin
             registers[reg_sel] <= data_in;
         end

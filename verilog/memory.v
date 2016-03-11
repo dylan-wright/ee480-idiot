@@ -18,10 +18,8 @@ module memory(data_out, data_in, mode, address, clk);
     always @(posedge clk) begin
         if (mode == `memModeIn) begin
             mem[address] = data_in;
-            $display("write %h to %h", data_in, address);
         end else if (mode == `memModeOut) begin
             d = mem[address];
-            $display("read %h", d);
         end
     end
     
