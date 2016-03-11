@@ -195,6 +195,15 @@ In addition, to the previously described errors it might help to view the follow
 \textbf{Notable Workarounds} section. 
 
 
+In the non trivial test, there is a possible error. The program reaches the
+code generated for exiting the function but instead of returning and reaching
+the sys instruction (halt), it reaches the \texttt{jz \$u0, \$ra} and then
+starts at the begining. This may be due to several things. There is no
+return in the c program used to generate the test vector, the idiocc compiler
+may be producing incorrect linkage, or there may be a problem in the design.
+
+Also, it might help to view the following \textbf{Notable Workarounds} section
+of this section, that might be another location were a problem might arise.
 
 \subsection{Notable Workarounds}
 \subsubsection{Instruction Register Assignment}
