@@ -93,7 +93,13 @@ a deeper address space. Otherwise it is essentially the same.
 \subsection{Control}
 The control module implements a FSM which defines which control signals to 
 set when. This module also can control the bus, and read the instruction register.
-
+This module has two primary sections; the combinational and sequential sections.
+The combinational section determines the next state. The sequential section
+determines which signals to set to what.
+\subsection{Proccesor}
+The proccesor module instantiates each of the other modules and connects them.
+It arbitrates access to a bus based on the control signals from the control
+module. 
 \section{Testing}
 \subsection{Instruction Set Architecture}
 In order to test the IDIOT instruction set specification a test framework was
