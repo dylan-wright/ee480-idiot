@@ -195,6 +195,13 @@ We're still in the early stages of testing so there is the possibility of many t
 being incorrect. This is something that I will fill in with more detail as we 
 further approach completion with the testing of the assignment.
 
+In the non trivial test, there is a possible error. The program reaches the
+code generated for exiting the function but instead of returning and reaching
+the sys instruction (halt), it reaches the \texttt{jz \$u0, \$ra} and then
+starts at the begining. This may be due to several things. There is no
+return in the c program used to generate the test vector, the idiocc compiler
+may be producing incorrect linkage, or there may be a problem in the design.
+
 Also, it might help to view the following \textbf{Notable Workarounds} section
 of this section, that might be another location were a problem might arise.
 
