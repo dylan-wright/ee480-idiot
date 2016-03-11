@@ -11,7 +11,6 @@
 %			     Verilog Module testing, General Approach, and the three
 %			     subsections related to issues. Also created a general
 %			     appendix. 
-%      03-10-2016:
 
 \documentclass[conference]{IEEEtran}
 \usepackage{graphicx}
@@ -39,7 +38,7 @@ Due to the complex nature of this assignment, the general approach
 first involved forming a top down design, a comprehensive finite
 state machine (FSM) for the ISA instructions and then a far more specific
 FSM. Diagrams were created for these designs and they can be 
-found as \textbf{Figures 1, 2, 3, and 4} respectively in the \textbf{Appendix} 
+found as \textbf{Figures 1 through 7} respectively in the \textbf{Appendix} 
 of this report. 
 
 One key decision that was made over the course of this project included 
@@ -190,13 +189,12 @@ running \texttt{proccesor\_tb.v} using the custom program test vector. This
 program loops 10 times. This behavior can be confirmed using GTKWave.
 
 \section{Issues}
-\subsection{Possible Errors}
-We're still in the early stages of testing so there is the possibility of many things 
-being incorrect. This is something that I will fill in with more detail as we 
-further approach completion with the testing of the assignment.
+\subsection{Known Errors}
+It was noticed that for the non trivial test, the
+In addition, to the previously described errors it might help to view the following 
+\textbf{Notable Workarounds} section. 
 
-Also, it might help to view the following \textbf{Notable Workarounds} section
-of this section, that might be another location were a problem might arise.
+
 
 \subsection{Notable Workarounds}
 \subsubsection{Instruction Register Assignment}
