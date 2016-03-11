@@ -1,7 +1,7 @@
 %   Dylan Wright - dylan.wright@uky.edu
 %   Casey O'kane - casey.okane@uky.edu
 %   EE480 - Assignment 2: The Making Of An IDIOT
-%   note.tex : Implementer's Note
+%   note.tex : Implementor's Note
 %   Version:
 %       02-14-2016 : initial
 %	  03-06-2016 : Revised content slightly, added "General Approach" and 
@@ -69,7 +69,7 @@ in the diagrams represented in the \textbf{Appendix} of these notes
  
 After completing all of the mentioned modules, associated test benches were 
 constructed as stated in \textbf{B. Verilog Modules} of the \textbf{Testing} portion
-of these notes and issues wereresolved as they arose.
+of these notes and issues were resolved as they arose.
  
 \section{Implementation}
 This section describes how each module was implemented.
@@ -82,7 +82,7 @@ implemented as an ALU operation but it was to make the control flow simpler.
 The register file was implemented as a 64 word (16 bit) deep memory. It inputs
 a register address which will be sourced from the control logic in the module
 which instantiates it. This address is used to select which register to save
-into. The first 8 registers each recieve an initial value. 
+into. The first 8 registers each receive an initial value. 
 
 The read only registers are only read only in the sense that the proccesor
 trusts the programmer/compiler to not write into a read only register.
@@ -142,7 +142,7 @@ module. All of the tests can be run using the \texttt{test.sh} script in
 the verilog directory. 
 
 \subsubsection{\texttt{alu\_tb.v}}
-This testbench execises the ALU module defined in \texttt{alu.v} by reading
+This testbench excises the ALU module defined in \texttt{alu.v} by reading
 in test vectors and checking the ALU's output. The test vectors are in
 \texttt{tests/aluXvector.vmem}, \texttt{tests/aluYvector.vmem},
 \texttt{tests/aluZvector.vmem}, \texttt{tests/aluOpvector.vmem}. 
@@ -162,7 +162,7 @@ in \texttt{proccesor.v}). The memory module is initialized with a vmem file. By
 default this is 
 \texttt{tests/proccesor/proccesor-custom.vmem}. This contains a custom IDIOT
 assembly program assembled using \texttt{aik}. This program performs a simple
-loop. After that it executes the thusfar ALU instructions, squash, store, and
+loop. After that it executes the thus far ALU instructions, squash, store, and
 load. Then it ends. Because this program uses every instruction it produces 
 nearly complete coverage. The output of covered for this program is included
 as Documentation/covreport.txt
@@ -176,15 +176,15 @@ This testbench is also used to run the other proccesor vmem tests by
 The jump to main in this version is fixed to include an underscore.
 
 \subsection{Utilization of GTKWave}
-GTKWave was used extensivly to debug timing issues with the control. It was 
+GTKWave was used extensively to debug timing issues with the control. It was 
 helpful to see when signals were being changed. To this effect, it was 
-advantagous to write several file filters to make reading waveforms easier.
+advantageous to write several file filters to make reading waveforms easier.
 These files are in \texttt{verilog/gtkwave-config/}
 
 \subsection{Testing Results}
 The results of running \texttt{test.sh} shows that the design passes the
 functional test suite (the ALU, register\_file, and memory tests). This means
-that the design modules appear to be correctly implemeted. The results of 
+that the design modules appear to be correctly implemented. The results of 
 running \texttt{proccesor\_tb.v} using the custom program test vector. This
 program loops 10 times. This behavior can be confirmed using GTKWave.
 
@@ -198,7 +198,7 @@ In addition, to the previously described errors it might help to view the follow
 In the non trivial test, there is a possible error. The program reaches the
 code generated for exiting the function but instead of returning and reaching
 the sys instruction (halt), it reaches the \texttt{jz \$u0, \$ra} and then
-starts at the begining. This may be due to several things. There is no
+starts at the beginning. This may be due to several things. There is no
 return in the c program used to generate the test vector, the idiocc compiler
 may be producing incorrect linkage, or there may be a problem in the design.
 
@@ -212,7 +212,7 @@ that rather than storing the value stored on the Bus, that the value stored
 in the MDR should be used as the IR only reads from the MDR anyway.
 \subsubsection{Control FSM Timing}
 The original design for the finite state machine was much smaller than the 
-final one present in the project. In order to amilliorate timing issues, a
+final one present in the project. In order to ameliorate timing issues, a
 number of state were expanded into either multiple states or lengthened. This 
 was usually due to a register not latching in time or the bus not having the
 right value. While this is not an ideal solution to the problem, it does work.
