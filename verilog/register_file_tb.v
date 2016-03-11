@@ -8,7 +8,9 @@ module register_file_tb;
     reg [5:0] reg_sel;
     reg [1:0] mode;
     reg clear;
-    register_file uut(data_out, data_in, reg_sel, mode, clk, clear);
+    wire `WORD testreg;
+
+    register_file uut(data_out, data_in, reg_sel, mode, clk, clear, testreg);
 
     initial begin
         $dumpfile("register_file_tb.vcd");
