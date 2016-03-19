@@ -1,7 +1,7 @@
 %   Dylan Wright - dylan.wright@uky.edu
 %   Casey O'kane - casey.okane@uky.edu
 %   EE480 - Assignment 2: The Making Of An IDIOT
-%   note.tex : Implementer's Note
+%   note.tex : Implementor's Note
 %   Version:
 %       02-14-2016 : initial
 %	  03-06-2016 : Revised content slightly, added "General Approach" and 
@@ -11,7 +11,6 @@
 %			     Verilog Module testing, General Approach, and the three
 %			     subsections related to issues. Also created a general
 %			     appendix. 
-%      03-10-2016:
 
 \documentclass[conference]{IEEEtran}
 \usepackage{graphicx}
@@ -34,6 +33,72 @@ using the AIK assembler, the Verilog Hardware Design Language and detailed test
 plan to exhaustively test the different components and logic of the design. 
 \end{abstract}
 
+\section{General Approach}
+Due to the complex nature of this assignment, the general approach 
+first involved forming a top down design, a comprehensive finite
+state machine (FSM) for the ISA instructions and then a far more specific
+FSM. Diagrams were created for these designs and they can be 
+found as \textbf{Figures 1 through 7} respectively in the \textbf{Appendix} 
+of this report. 
+
+One key decision that was made over the course of this project included 
+the decision to select a Harvard Architecture as a model for the memory unit
+rather than a Von Neumann model. The group ultimately decided to go 
+with this method as it would allow them to simultaneously read or write
+instructions to or from memory.This decision is reflected in the AIK 
+specification that was created \texttt{IDIOT\_Specv} found in the \texttt{IDIOT}
+directory of the provided tarball).
+
+After constructing the top down design, the AIK specification
+for the project was formed as \texttt{IDIOT\_Spec}. This specification primarily involved specifying IDIOT ISA 
+instructions using the conventions discussed discussed in class, for example all
+floating point instructions are actually system calls (or HALTs) which can be implemented as a special case of the jz instruction. 
+
+Once the AIK specification was created, skeleton modules \texttt{alu.v, control.v,
+memory.v, processor.v,} and \texttt{register\_file.v} followed. Initially these files were 
+written with basic functionality and later expanded using a top level approach,
+by then setting up \texttt{processor.v} and the completing the modules that it
+instantiates. \texttt{signals.v} contains many of the signals that would be used  to communicate 
+between devices along with a few global constants utilized throughout the 
+Verilog code (the 16 bit register constant WORD for example).
+
+Speaking more to \texttt{processor.v}, it instantiates the other necessary modules
+and then uses one level sensitive  and two edge sensitive always blocks to 
+simulate the processor. The specifics of these operations are detailed 
+in the diagrams represented in the \textbf{Appendix} of these notes
+ 
+After completing all of the mentioned modules, associated test benches were 
+constructed as stated in \textbf{B. Verilog Modules} of the \textbf{Testing} portion
+of these notes and issues were resolved as they arose.
+ 
+\section{Implementation}
+This section describes how each module was implemented.
+\subsection{ALU}
+The ALU was implemented as a simple combinational circuit. The module switches
+on the opcode and uses high level code to implement each operation. This may
+note produce the minimal solution, but it works. Dup did not need to be 
+implemented as an ALU operation but it was to make the control flow simpler.
+\subsection{Register File}
+The register file was implemented as a 64 word (16 bit) deep memory. It inputs
+a register address which will be sourced from the control logic in the module
+which instantiates it. This address is used to select which register to save
+into. The first 8 registers each receive an initial value. 
+
+The read only registers are only read only in the sense that the proccesor
+trusts the programmer/compiler to not write into a read only register.
+\subsection{Memory}
+The memory is implemented in the same way as the register file but with
+a deeper address space. Otherwise it is essentially the same.
+\subsection{Control}
+The control module implements a FSM which defines which control signals to 
+set when. This module also can control the bus, and read the instruction register.
+This module has two primary sections; the combinational and sequential sections.
+The combinational section determines the next state. The sequential section
+determines which signals to set to what.
+\subsection{Proccesor}
+The proccesor module instantiates each of the other modules and connects them.
+It arbitrates access to a bus based on the control signals from the control
+module. 
 \section{Testing}
 \subsection{Instruction Set Architecture}
 In order to test the IDIOT instruction set specification a test framework was
@@ -77,7 +142,7 @@ module. All of the tests can be run using the \texttt{test.sh} script in
 the verilog directory. 
 
 \subsubsection{\texttt{alu\_tb.v}}
-This testbench execises the ALU module defined in \texttt{alu.v} by reading
+This testbench excises the ALU module defined in \texttt{alu.v} by reading
 in test vectors and checking the ALU's output. The test vectors are in
 \texttt{tests/aluXvector.vmem}, \texttt{tests/aluYvector.vmem},
 \texttt{tests/aluZvector.vmem}, \texttt{tests/aluOpvector.vmem}. 
@@ -94,69 +159,48 @@ This testbenc exercises the register file module defined in \texttt{register\_fi
 This testbench exercises the control logic and proccesor connections. It does
 so by providing a reset and clock to the instantiated proccesor module (defined
 in \texttt{proccesor.v}). The memory module is initialized with a vmem file. By
-default this is \texttt{tests/proccesor/proccesor-test-non-trivial.vmem}. This
-contains a non trivial program generated by \texttt{idiocc} and \texttt{aik}. 
-This testbench is also used to run the other proccesor vmem tests by 
-\texttt{test.sh}. \\
-
-The other primary test vector for this testbench is
+default this is 
 \texttt{tests/proccesor/proccesor-custom.vmem}. This contains a custom IDIOT
 assembly program assembled using \texttt{aik}. This program performs a simple
-loop. After that it executes the thusfar ALU instructions, squash, store, and
+loop. After that it executes the thus far ALU instructions, squash, store, and
 load. Then it ends. Because this program uses every instruction it produces 
 nearly complete coverage. The output of covered for this program is included
 as Documentation/covreport.txt
 
+The other primary test vector for this testbench is
+\texttt{tests/proccesor/proccesor-test-non-trivial.vmem}. This
+contains a non trivial program generated by \texttt{idiocc} and \texttt{aik}. 
+This testbench is also used to run the other proccesor vmem tests by 
+\texttt{test.sh}. This test was produced by a slightly modified version of 
+\texttt{idiocc}. This version is included in the \texttt{IDIOT} directory.
+The jump to main in this version is fixed to include an underscore.
+
 \subsection{Utilization of GTKWave}
-GTKWave was used extensivly to debug timing issues with the control. It was 
-helpful to see when signals were being changed. 
+GTKWave was used extensively to debug timing issues with the control. It was 
+helpful to see when signals were being changed. To this effect, it was 
+advantageous to write several file filters to make reading waveforms easier.
+These files are in \texttt{verilog/gtkwave-config/}
 
-
-\section{General Approach}
-Due to the complex nature of this assignment, the general approach 
-first involved forming a top down design, a comprehensive finite
-state machine (FSM) for the ISA instructions and then a far more specific
-FSM. Diagrams were created for these designs and they can be 
-found as \textbf{Figures 1, 2, 3, and 4} respectively in the \textbf{Appendix} 
-of this report. 
-
-One key decision that was made over the course of this project included 
-the decision to select a Harvard Architecture as a model for the memory unit
-rather than a Von Neumann model. The group ultimately decided to go 
-with this method as it would allow them to simultaneously read or write
-instructions to or from memory.This decision is reflected in the AIK 
-specification that was created \texttt{IDIOT\_Specv} found in the \texttt{IDIOT}
-directory of the provided tarball).
-
-After constructing the top down design, the AIK specification
-for the project was formed as \texttt{IDIOT\_Spec}. This specification primarily involved specifying IDIOT ISA 
-instructions using the conventions discussed discussed in class, for example all
-floating point instructions are actually system calls (or HALTs) which can be implemented as a special case of the jz instruction. 
-
-Once the AIK specification was created, skeleton modules \texttt{alu.v, control.v,
-memory.v, processor.v,} and \texttt{register\_file.v} followed. Initially these files were 
-written with basic functionality and later expanded using a top level approach,
-by then setting up \texttt{processor.v} and the completing the modules that it
-instantiates. \texttt{signals.v} contains many of the signals that would be used  to communicate 
-between devices along with a few global constants utilized throughout the 
-Verilog code (the 16 bit register constant WORD for example).
-
-Speaking more to \texttt{processor.v}, it instantiates the other necessary modules
-and then uses one level sensitive  and two edge sensitive always blocks to 
-simulate the processor. The specifics of these operations are detailed 
-in the diagrams represented in the \textbf{Appendix} of these notes
- 
-After completing all of the mentioned modules, associated test benches were 
-constructed as stated in \textbf{B. Verilog Modules} of the \textbf{Testing} portion
-of these notes and issues wereresolved as they arose.
- 
-
+\subsection{Testing Results}
+The results of running \texttt{test.sh} shows that the design passes the
+functional test suite (the ALU, register\_file, and memory tests). This means
+that the design modules appear to be correctly implemented. The results of 
+running \texttt{proccesor\_tb.v} using the custom program test vector. This
+program loops 10 times. This behavior can be confirmed using GTKWave.
 
 \section{Issues}
-\subsection{Possible Errors}
-We're still in the early stages of testing so there is the possibility of many things 
-being incorrect. This is something that I will fill in with more detail as we 
-further approach completion with the testing of the assignment.
+\subsection{Known Errors}
+It was noticed that for the non trivial test, the
+In addition, to the previously described errors it might help to view the following 
+\textbf{Notable Workarounds} section. 
+
+
+In the non trivial test, there is a possible error. The program reaches the
+code generated for exiting the function but instead of returning and reaching
+the sys instruction (halt), it reaches the \texttt{jz \$u0, \$ra} and then
+starts at the beginning. This may be due to several things. There is no
+return in the c program used to generate the test vector, the idiocc compiler
+may be producing incorrect linkage, or there may be a problem in the design.
 
 Also, it might help to view the following \textbf{Notable Workarounds} section
 of this section, that might be another location were a problem might arise.
@@ -168,76 +212,9 @@ that rather than storing the value stored on the Bus, that the value stored
 in the MDR should be used as the IR only reads from the MDR anyway.
 \subsubsection{Control FSM Timing}
 The original design for the finite state machine was much smaller than the 
-final one present in the project. In order to amilliorate timing issues, a
+final one present in the project. In order to ameliorate timing issues, a
 number of state were expanded into either multiple states or lengthened. This 
 was usually due to a register not latching in time or the bus not having the
 right value. While this is not an ideal solution to the problem, it does work.
-
-\appendix{Notable Diagrams}
-
-\clearpage 
-\section{Top Down Design}
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{TopDownDesignDraftp1.pdf}
-\caption{Top Down Design}
-\label{fig_sim}
-\end{figure}
-
-\clearpage
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{TopDownDesignDraftp2.pdf}
-\caption{General FSM}
-\label{fig_sim}
-\end{figure}
-
-\clearpage
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{ControlFSMp1.pdf}
-\caption{Top Down FSM}
-\label{fig_sim}
-\end{figure}
-
-
-\clearpage
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{ControlFSMp2.pdf}
-\caption{Detailed FSM for ALU Operations}
-\label{fig_sim}
-\end{figure}
-
-\clearpage
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{ControlFSMp3.pdf}
-\caption{Detailed FSM for Load/Store Operations}
-\label{fig_sim}
-\end{figure}
-
-
-\clearpage
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{ControlFSMp4.pdf}
-\caption{Detailed FSM for Load Immediate Operations}
-\label{fig_sim}
-\end{figure}
-
-\clearpage
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\textwidth]{ControlFSMp5.pdf}
-\caption{Detailed FSM for Jump Operations}
-\label{fig_sim}
-\end{figure}
-
 
 \end{document}
